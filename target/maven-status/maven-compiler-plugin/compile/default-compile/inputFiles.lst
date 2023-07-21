@@ -1,0 +1,16 @@
+/home/chaosum/Documents/swingy/src/main/java/swingy/character/items/Armor.java
+/home/chaosum/Documents/swingy/src/main/java/swingy/character/hero/Hero.java
+/home/chaosum/Documents/swingy/src/main/java/swingy/character/items/Weapon.java
+/home/chaosum/Documents/swingy/src/main/java/swingy/character/Character.java
+/home/chaosum/Documents/swingy/src/main/java/swingy/character/hero/ClassPaladin.java
+/home/chaosum/Documents/swingy/src/main/java/swingy/character/hero/ClassMage.java
+/home/chaosum/Documents/swingy/src/main/java/swingy/character/hero/WrongClassException.java
+/home/chaosum/Documents/swingy/src/main/java/swingy/character/hero/HeroCreator.java
+/home/chaosum/Documents/swingy/src/main/java/swingy/character/randoms/Mob.java
+/home/chaosum/Documents/swingy/src/main/java/swingy/character/randoms/MobSpawner.java
+/home/chaosum/Documents/swingy/src/main/java/swingy/App.java
+/home/chaosum/Documents/swingy/src/main/java/swingy/character/items/Items.java
+/home/chaosum/Documents/swingy/src/main/java/swingy/character/randoms/WrongMobException.java
+/home/chaosum/Documents/swingy/src/main/java/swingy/character/randoms/WorldBoss.java
+/home/chaosum/Documents/swingy/src/main/java/swingy/character/hero/ClassArcher.java
+/home/chaosum/Documents/swingy/src/main/java/swingy/character/items/Helmet.java

@@ -5,6 +5,7 @@ import java.util.List;
 public class Character {
 	protected String name;
 	protected int	hp;
+	protected int	maxHp;
 	protected int	level;
 	protected int attackValue;
 	protected int armorValue;
@@ -14,6 +15,7 @@ public class Character {
 	protected Character() {
 		this.name = "NaN";
 		this.hp = 100;
+		this.maxHp = 100;
 		this.level = 1;
 		this.attackValue = 0;
 		this.armorValue = 0;
@@ -36,6 +38,12 @@ public class Character {
 		return (this.hp);
 	}
 	public	void	setHp(int value) {
+		this.hp = value;
+	}
+	public int	getMaxHp() {
+		return (this.hp);
+	}
+	public	void	setMaxHp(int value) {
 		this.hp = value;
 	}
 	public	int	getLevel() {

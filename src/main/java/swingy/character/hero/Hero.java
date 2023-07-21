@@ -6,15 +6,16 @@ import swingy.character.items.Helmet;
 import swingy.character.items.Weapon;
 
 public class Hero extends Character {
-	protected int	experience;
-	protected int nextLevelXp;
+	protected int		experience;
+	protected int		nextLevelXp;
 	protected String	className;
-	private String		title;
+	protected String	title;
 
-	Weapon		weapon;
-	Armor		armor;
-	Helmet		helmet;
-	//special attack;
+	protected Weapon	weapon;
+	protected Armor		armor;
+	protected Helmet	helmet;
+	protected String	specialAttack;
+	protected int		specialChargeCounter;
 
 	protected Hero(String name) {
 		super(name);
@@ -79,5 +80,14 @@ public class Hero extends Character {
 	}
 	public void setHelmet (Helmet newHelmet) {
 		this.helmet = newHelmet;
+	}
+	public String getSpecialAttack() {
+		return (this.specialAttack);
+	}
+	public int getSpecialChargeCounter() {
+		return (this.specialChargeCounter);
+	}
+	public void setSpecialChargeCounter(int value) {
+		this.specialChargeCounter = value;
 	}
 }
