@@ -3,8 +3,8 @@ package swingy.character.randoms;
 import java.util.ArrayList;
 import java.util.List;
 
+import swingy.character.items.DestroyerOfWold;
 import swingy.character.items.Items;
-import swingy.character.items.Weapon;
 
 public class WorldBoss extends Mob{
 	protected String category;
@@ -19,13 +19,9 @@ public class WorldBoss extends Mob{
 		this.armorValue = 10;
 		this.attackValue = 20;
 		this.category = "Boss";
+		this.experienceDroped = 3000; //a modif en fonction du level de la MAP
 		this.lootTable = new ArrayList<Items>();
-		this.lootTable.add(createDestroyerOfWold());
-		this.weapon = createDestroyerOfWold();
-	}
-
-	private Weapon createDestroyerOfWold() {
-		Weapon destroyerOfWold =  new Weapon();
-		return (destroyerOfWold);
+		this.lootTable.add(new DestroyerOfWold());
+		this.weapon = new DestroyerOfWold();
 	}
 }

@@ -3,6 +3,6 @@ package swingy.character.hero;
 public class ClassMage extends Hero{
 	public ClassMage(String name) {
 		super(name);
-		this.className = "Mage";
+		this.typeName = "Mage";
 	}
 }

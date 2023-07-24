@@ -1,22 +1,23 @@
 package swingy.character.hero;
 
-import swingy.character.Character;
+import java.util.Random;
+
+import swingy.character.Characters;
 import swingy.character.items.Armor;
 import swingy.character.items.Helmet;
 import swingy.character.items.Weapon;
 
-public class Hero extends Character {
+public class Hero extends Characters {
 	protected int		experience;
 	protected int		nextLevelXp;
-	protected String	className;
 	protected String	title;
-
 	protected Weapon	weapon;
 	protected Armor		armor;
 	protected Helmet	helmet;
 	protected String	specialAttack;
+	protected int		currentCharge;
 	protected int		specialChargeCounter;
-
+	
 	protected Hero(String name) {
 		super(name);
 		this.experience = 0;
@@ -41,10 +42,60 @@ public class Hero extends Character {
 		//display level up
 	}
 
-	//Getters et setters
-	public String getClassName() {
-		return (this.className);
+	public void chargeUp(){
+		this.setCurrentCharge(this.currentCharge + 1);
+		if (this.getCurrentCharge() == this.specialChargeCounter) {
+			//activer l'option special
+		}
 	}
+
+	private int checkBlockPower() {
+		int blockPower = 0;
+
+		if (this.getWeapon().getSpecialEffects().contains("Block")) {
+			blockPower++;
+		}
+		if (this.getArmor().getSpecialEffects().contains("Block")) {
+			blockPower++;
+		}
+		if (this.getHelmet().getSpecialEffects().contains("Block")) {
+			blockPower++;
+		}
+		return (blockPower);
+	}
+	private int checkResistances(int damages, Weapon weapon, Characters from) {
+		int damagesModifier = 0;
+		if (this.getWeaknesses().contains(from.getTypeName())) {
+			damagesModifier = damagesModifier + (damages / 3);
+		}
+		if (this.armor.getSpecialEffects().contains(from.getTypeName() + "Resistance")) {
+			damagesModifier = damagesModifier - (damages / 3); 
+		}
+		if (this.helmet.getSpecialEffects().contains(from.getTypeName() + "Resistance")) {
+			damagesModifier = damagesModifier - (damages / 3); 
+		}
+		if (this.weapon.getSpecialEffects().contains(from.getTypeName() + "Resistance")) {
+			damagesModifier = damagesModifier - (damages / 3); 
+		}
+		return (damages + damagesModifier);
+	}
+	public void takeDamages(int damages, Weapon weapon, Characters from) throws DeathException {
+		int blockPower = checkBlockPower();
+		if ( blockPower > 0) {
+			Random rand = new Random();
+			if (rand.nextInt(10) < blockPower){
+				//damages are parried
+				return ;
+			}
+		}
+		damages = checkResistances(damages, weapon, from);
+		this.hp = this.hp - damages;
+		if (this.hp <= 0) {
+			throw new DeathException(this.name + this.title + "died from" + from.getName() + "\'s " + weapon.getName());
+		}
+	}
+
+	//Getters et setters
 	public String getTitle() {
 		return (this.title);
 	}
@@ -89,5 +140,11 @@ public class Hero extends Character {
 	}
 	public void setSpecialChargeCounter(int value) {
 		this.specialChargeCounter = value;
+	}
+	public int getCurrentCharge() {
+		return (this.currentCharge);
+	}
+	public void setCurrentCharge(int value) {
+		this.currentCharge = value;
 	}
 }

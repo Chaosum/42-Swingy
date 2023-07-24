@@ -2,17 +2,22 @@ package swingy.character;
 
 import java.util.List;
 
-public class Character {
+import swingy.character.hero.DeathException;
+import swingy.character.items.Weapon;
+
+public abstract class Characters {
 	protected String name;
 	protected int	hp;
 	protected int	maxHp;
 	protected int	level;
 	protected int attackValue;
 	protected int armorValue;
+	protected String typeName;
 	protected List<String> weaknesses;
-	protected List<String> strengths;
 
-	protected Character() {
+	protected abstract void	takeDamages(int damages, Weapon weapon, Characters from) throws DeathException;
+	
+	protected Characters() {
 		this.name = "NaN";
 		this.hp = 100;
 		this.maxHp = 100;
@@ -20,7 +25,7 @@ public class Character {
 		this.attackValue = 0;
 		this.armorValue = 0;
 	}
-	protected Character(String name) {
+	protected Characters(String name) {
 		this.name = name;
 		this.hp = 0;
 		this.level = 0;
@@ -28,6 +33,9 @@ public class Character {
 		this.armorValue = 0;
 	}
 	//Getters et setters
+	public String getTypeName() {
+		return (this.typeName);
+	}
 	public String	getName() {
 		return (this.name);
 	}
@@ -69,11 +77,5 @@ public class Character {
 	}
 	public void	setWeaknesses(List<String> newList) {
 		this.weaknesses = newList;
-	}
-	public List<String> getStrengths() {
-		return (this.strengths);
-	}
-	public void	setStrengths(List<String> newList) {
-		this.strengths = newList;
 	}
 }

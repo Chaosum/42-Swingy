@@ -1,0 +1,14 @@
+types:
+
+Boss
+Paladin
+Mage
+Archer
+undead
+Human
+------------------------
+specialEffects:
+
+Block
+${TypeName} + "Resistance"
+${TypeName} + "Strengths"

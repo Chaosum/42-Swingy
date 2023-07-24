@@ -5,8 +5,12 @@ public class SwordAndShield extends Weapon {
 		this.type = "sword";
 		this.name = "sword and shield";
 		this.rank = "Basic";
+		this.levelRequired = 1;
 		this.speedValue = 3;
 		this.attackModifier = 5;
 		this.armorModifier = 5;
+		this.specialEffect = "Block";
+	}
+	protected void special() {
 	}
 }
