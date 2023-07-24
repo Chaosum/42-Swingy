@@ -1,10 +1,13 @@
 package swingy.character.hero;
 
-import java.util.Random;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
 import swingy.character.items.SwordAndShield;
 import swingy.character.randoms.Mob;
 
+@Entity
+@Table(name = "heros")
 public class ClassArcher extends Hero {
 	public ClassArcher(String name) {
 		super(name);

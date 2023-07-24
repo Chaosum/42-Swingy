@@ -10,7 +10,7 @@
 
   <name>swingy</name>
   <!-- FIXME change it to the project's website -->
-  <url>http://www.example.com</url>
+  <url>http://www.chaswingyosum.com</url>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -29,6 +29,11 @@
       <groupId>org.hibernate.validator</groupId>
       <artifactId>hibernate-validator</artifactId>
       <version>6.2.0.Final</version>
+    </dependency>
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-core</artifactId>
+      <version>5.5.7.Final</version>
     </dependency>
     <dependency>
       <groupId>org.projectlombok</groupId>

@@ -1,26 +1,27 @@
 package swingy.graphicInterface;
 
 import java.awt.BorderLayout;
-import java.awt.MenuBar;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import swingy.App;
 
 @Data
 @EqualsAndHashCode(callSuper=false)
 public class MainFrame extends JFrame {
-
 	public MainFrame() {
 		super("Swingy");
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		this.setSize(500, 500);
-		this.setLocation(null);
+		//this.setLocation(null);
 		this.setLayout(new BorderLayout());
 		JPanel contentPane = (JPanel) this.getContentPane();
 
@@ -35,6 +36,18 @@ public class MainFrame extends JFrame {
 
 	private JComboBox<String> createHeroList() {
 		JComboBox<String> heroList = new JComboBox<String>();
+		try {
+			Statement statement = App.modifyDatabase(App.connectToDatabase());
+			ResultSet resultSet = statement.executeQuery("SELECT * FROM heros");
+			String name = resultSet.getString("name") + " " + resultSet.getString("title");
+			heroList.addItem(name);
+			while (resultSet.next()) {
+				name = resultSet.getString("name") + " " + resultSet.getString("title");
+				heroList.addItem(name);
+			}
+		} catch (SQLException e) {
+			// TODO: handle exception
+		}
 		
 		return (heroList);
 	}

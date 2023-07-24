@@ -2,8 +2,11 @@ package swingy.character.hero;
 
 import java.util.Random;
 
+import javax.persistence.Entity;
+
 import swingy.character.items.Wand;
 
+@Entity
 public class ClassMage extends Hero{
 	public ClassMage(String name) {
 		super(name);

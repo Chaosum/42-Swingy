@@ -1,7 +1,10 @@
 package swingy.character.hero;
 
+import javax.persistence.Entity;
+
 import swingy.character.items.SwordAndShield;
 
+@Entity
 public class ClassPaladin extends Hero {
 	public ClassPaladin(String name) {
 		super(name);
