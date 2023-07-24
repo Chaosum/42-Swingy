@@ -11,4 +11,5 @@ specialEffects:
 
 Block
 ${TypeName} + "Resistance"
-${TypeName} + "Strengths"
+${TypeName} + "Strength"
+Perforant

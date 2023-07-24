@@ -1,5 +1,7 @@
 package swingy.character.items;
 
+import swingy.character.hero.Hero;
+
 public class SwordAndShield extends Weapon {
 	public SwordAndShield() {
 		this.type = "sword";
@@ -9,8 +11,10 @@ public class SwordAndShield extends Weapon {
 		this.speedValue = 3;
 		this.attackModifier = 5;
 		this.armorModifier = 5;
-		this.specialEffect = "Block";
+		this.specialEffects.add("Block");
 	}
-	protected void special() {
+	public void special() {
+	}
+	public void special(Hero hero) {
 	}
 }

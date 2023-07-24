@@ -6,6 +6,7 @@ import java.util.Random;
 
 import lombok.Data;
 import swingy.character.hero.Hero;
+import swingy.character.hero.SpecialIsReadyException;
 
 @Data
 public class Map {
@@ -83,13 +84,21 @@ public class Map {
 			|| event == 'D' || event == 'L' || event == 'O') {
 			//fight here en fonction de l'avancement definir le level / le type de mob
 			//if (win) set char a .
-			this.currentHero.chargeUp();
+			try {
+				this.currentHero.chargeUp();
+			} catch (SpecialIsReadyException e) {
+				// agir en fonction -> rendre le bouton disponible
+			}
 			newString.setCharAt(posX, '.');
 			map.set(posY, newString.toString());
 		}
 		else if (event == '?') {
 			//evenement ici -> random event (heal ou malus a voir)
-			this.currentHero.chargeUp();
+			try {
+				this.currentHero.chargeUp();
+			} catch (SpecialIsReadyException e) {
+				// agir en fonction -> rendre le bouton disponible
+			}
 			newString.setCharAt(posX, '.');
 			map.set(posY, newString.toString());
 		}

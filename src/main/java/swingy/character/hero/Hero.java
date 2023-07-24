@@ -2,11 +2,16 @@ package swingy.character.hero;
 
 import java.util.Random;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import swingy.character.Characters;
 import swingy.character.items.Armor;
 import swingy.character.items.Helmet;
 import swingy.character.items.Weapon;
+import swingy.character.randoms.Mob;
 
+@Data
+@EqualsAndHashCode(callSuper=false)
 public class Hero extends Characters {
 	protected int		experience;
 	protected int		nextLevelXp;
@@ -14,12 +19,17 @@ public class Hero extends Characters {
 	protected Weapon	weapon;
 	protected Armor		armor;
 	protected Helmet	helmet;
+	protected int		hpBonus;
 	protected String	specialAttack;
 	protected int		currentCharge;
 	protected int		specialChargeCounter;
+	protected int		specialDamages;
+	protected String	specialType;
+	protected int		fleeChances;
 	
 	protected Hero(String name) {
 		super(name);
+		this.fleeChances = 50;
 		this.experience = 0;
 		setNextLevelXp();
 	}
@@ -42,28 +52,35 @@ public class Hero extends Characters {
 		//display level up
 	}
 
-	public void chargeUp(){
+	public void chargeUp() throws SpecialIsReadyException {
 		this.setCurrentCharge(this.currentCharge + 1);
 		if (this.getCurrentCharge() == this.specialChargeCounter) {
 			//activer l'option special
+			throw new SpecialIsReadyException();
 		}
 	}
+	public int special() {
+		return (0);
+	}
+	public int special(Mob mob) {
+		return (1);
+	}
 
-	private int checkBlockPower() {
+	protected int checkBlockPower() {
 		int blockPower = 0;
 
-		if (this.getWeapon().getSpecialEffects().contains("Block")) {
+		if (this.weapon.getSpecialEffects().contains("Block")) {
 			blockPower++;
 		}
-		if (this.getArmor().getSpecialEffects().contains("Block")) {
+		if (this.armor.getSpecialEffects().contains("Block")) {
 			blockPower++;
 		}
-		if (this.getHelmet().getSpecialEffects().contains("Block")) {
+		if (this.helmet.getSpecialEffects().contains("Block")) {
 			blockPower++;
 		}
 		return (blockPower);
 	}
-	private int checkResistances(int damages, Weapon weapon, Characters from) {
+	protected int checkResistances(int damages, Characters from) {
 		int damagesModifier = 0;
 		if (this.getWeaknesses().contains(from.getTypeName())) {
 			damagesModifier = damagesModifier + (damages / 3);
@@ -79,6 +96,7 @@ public class Hero extends Characters {
 		}
 		return (damages + damagesModifier);
 	}
+	@Override
 	public void takeDamages(int damages, Weapon weapon, Characters from) throws DeathException {
 		int blockPower = checkBlockPower();
 		if ( blockPower > 0) {
@@ -88,63 +106,54 @@ public class Hero extends Characters {
 				return ;
 			}
 		}
-		damages = checkResistances(damages, weapon, from);
+		damages = checkResistances(damages, from);
+		if (!weapon.getSpecialEffects().contains("Perforant")) {
+			damages -= this.armorValue;
+		}
+		if (damages <= 0) {
+			//no dmg deal
+			return ;
+		}
 		this.hp = this.hp - damages;
 		if (this.hp <= 0) {
 			throw new DeathException(this.name + this.title + "died from" + from.getName() + "\'s " + weapon.getName());
 		}
 	}
 
+	public void dealDamages(Mob to, boolean special) {
+		int damages = this.attackValue + this.weapon.getAttackModifier();
+		Random rand = new Random(); // definit si crit
+		if (rand.nextInt(10) < this.critChance) {
+			damages = damages * this.critModifier;
+		}
+		if (this.specialType == "attack" && special == true) {
+			damages += this.special();
+		}
+		if (this.weapon.getSpecialEffects().contains("passiv")) {
+			this.weapon.special(this);
+		}
+		int damagesModifier = 0;
+
+		if (this.weapon.getSpecialEffects().contains(to.getTypeName() + "Strength")) {
+			damagesModifier += damages / 3;
+		}
+		if (this.helmet.getSpecialEffects().contains(to.getTypeName() + "Strength")) {
+			damagesModifier += damages / 3;
+		}
+		if (this.armor.getSpecialEffects().contains(to.getTypeName() + "Strength")) {
+			damagesModifier += damages / 3;
+		}
+		damages += damagesModifier;
+		try {
+			to.takeDamages(damages, this.weapon, this);
+		} catch (DeathException e) {
+			this.hp = this.maxHp / 2 + this.hpBonus;
+			//mob killed - Victory
+		}
+	}
+
 	//Getters et setters
-	public String getTitle() {
-		return (this.title);
-	}
-	protected void	setExperience(String newTitle) {
-		this.title = newTitle;
-	}
-	public int getExperience() {
-		return (this.experience);
-	}
-	protected void	setExperience(int value) {
-		this.experience = value;
-	}
-	public int getNextLevelXp() {
-		return (this.nextLevelXp);
-	}
 	public void setNextLevelXp() {
 		this.nextLevelXp = ((this.level * 1000) + ((level - 1) * (level - 1)) * 450) - this.experience;
-	}
-	public Weapon getWeapon() {
-		return (this.weapon);
-	}
-	public void setWeapon(Weapon newWeapon) {
-		this.weapon = newWeapon;
-	}
-	public Armor getArmor() {
-		return (this.armor);
-	}
-	public void setArmor(Armor newArmor) {
-		this.armor = newArmor;
-	}
-	public Helmet getHelmet() {
-		return (this.helmet);
-	}
-	public void setHelmet (Helmet newHelmet) {
-		this.helmet = newHelmet;
-	}
-	public String getSpecialAttack() {
-		return (this.specialAttack);
-	}
-	public int getSpecialChargeCounter() {
-		return (this.specialChargeCounter);
-	}
-	public void setSpecialChargeCounter(int value) {
-		this.specialChargeCounter = value;
-	}
-	public int getCurrentCharge() {
-		return (this.currentCharge);
-	}
-	public void setCurrentCharge(int value) {
-		this.currentCharge = value;
 	}
 }
