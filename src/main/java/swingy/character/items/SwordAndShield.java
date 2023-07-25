@@ -1,8 +1,11 @@
 package swingy.character.items;
 
 
+import javax.persistence.Entity;
+
 import swingy.character.hero.Hero;
 
+@Entity
 public class SwordAndShield extends Weapon {
 	public SwordAndShield() {
 		this.type = "sword";

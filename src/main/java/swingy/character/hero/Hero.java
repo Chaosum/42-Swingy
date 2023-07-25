@@ -2,6 +2,11 @@ package swingy.character.hero;
 
 import java.util.Random;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import swingy.character.Characters;
@@ -12,12 +17,19 @@ import swingy.character.randoms.Mob;
 
 @Data
 @EqualsAndHashCode(callSuper=false)
+@Entity
 public class Hero extends Characters {
 	protected int		experience;
 	protected int		nextLevelXp;
 	protected String	title;
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn(name = "weapon_id")
 	protected Weapon	weapon;
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn(name = "armor_id")
 	protected Armor		armor;
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn(name = "helmet_id")
 	protected Helmet	helmet;
 	protected int		hpBonus;
 	protected String	specialAttack;
@@ -29,6 +41,7 @@ public class Hero extends Characters {
 	
 	protected Hero(String name) {
 		super(name);
+		title = "";
 		this.fleeChances = 50;
 		this.experience = 0;
 		setNextLevelXp();

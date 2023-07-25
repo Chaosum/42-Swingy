@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://xmlns.jcp.org/xml/ns/persistence"
+			 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			 xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_2.xsd"
+			 version="2.2">
+
+	<persistence-unit name="swingypersistance" transaction-type="RESOURCE_LOCAL">
+		<!-- Configuration pour la persistance -->
+
+		<provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+
+		<!-- Propriétés de connexion à la base de données -->
+		<properties>
+			<property name="hibernate.transaction.coordinator_class" value="org.hibernate.transaction.JDBCTransactionFactory"/>
+			<property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/swingy"/>
+			<property name="javax.persistence.jdbc.user" value="swingy"/>
+			<property name="javax.persistence.jdbc.password" value="swingyroot"/>
+			<property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver"/>
+
+			<!-- Dialecte pour PostgreSQL -->
+			<property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL95Dialect"/>
+
+			<!-- Options pour Hibernate -->
+			<property name="hibernate.hbm2ddl.auto" value="update"/> <!--create = reset a chaque boot / update = persistant + append / validate = uniquement verif si shema good-->
+			<property name="hibernate.show_sql" value="true"/> <!-- true affiche les commande sql dans la console-->
+			<property name="hibernate.format_sql" value="true"/> <!-- si true les requetes dans la console sont formatées de facon lisible-->
+		</properties>
+	</persistence-unit>
+
+</persistence>

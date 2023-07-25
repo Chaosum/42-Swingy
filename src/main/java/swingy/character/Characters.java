@@ -2,12 +2,23 @@ package swingy.character;
 
 import java.util.List;
 
+import javax.persistence.CollectionTable;
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.Table;
+
 import lombok.Data;
 import swingy.character.hero.DeathException;
 import swingy.character.items.Weapon;
 
+@Entity
+@Table(name = "heros")
 @Data
 public abstract class Characters {
+	@Id
 	protected String name;
 	protected int	hp;
 	protected int	maxHp;
@@ -15,6 +26,9 @@ public abstract class Characters {
 	protected int attackValue;
 	protected int armorValue;
 	protected String typeName;
+	@ElementCollection
+	@CollectionTable(name = "character_weaknesses", joinColumns = @JoinColumn(name = "character_name"))
+	@Column(name = "weakness")
 	protected List<String> weaknesses;
 	protected int	critChance;
 	protected int	critModifier;

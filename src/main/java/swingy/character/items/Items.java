@@ -3,7 +3,20 @@ package swingy.character.items;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CollectionTable;
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+
+@Entity
 public class Items {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id; // La clé primaire auto-générée
 	protected String name;
 	protected String rank;
 	protected String type;
@@ -11,6 +24,9 @@ public class Items {
 	protected int attackModifier;
 	protected int hpModifier;
 	protected int armorModifier;
+	@ElementCollection
+    @CollectionTable(name = "SpecialEffects", joinColumns = @JoinColumn(name = "item_id"))
+    @Column(name = "specialEffect")
 	protected List<String> specialEffects;
 
 	protected Items() {

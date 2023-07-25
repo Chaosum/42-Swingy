@@ -2,9 +2,12 @@ package swingy.character.items;
 
 import java.util.Random;
 
+import javax.persistence.Entity;
+
 import swingy.character.hero.Hero;
 import swingy.character.hero.SpecialIsReadyException;
 
+@Entity
 public class Wand extends Weapon {
 	public Wand() {
 		this.type = "wand";
