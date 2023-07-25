@@ -36,14 +36,15 @@ public class NewHeroDialog extends JDialog {
 	protected JCheckBox mage;
 	protected JCheckBox archer;
 	protected JLabel errorLabel;
+	protected HeroSelection parentPanel;
 
-	public NewHeroDialog(JFrame parentFrame) {
+	public NewHeroDialog(JFrame parentFrame, HeroSelection parentPanel) {
 		super(parentFrame, "New Hero", false); // true indique que la boîte de dialogue est modale
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setSize(300, 200);
 		setLocationRelativeTo(parentFrame);
 		errorLabel = new JLabel("");
-		
+		this.parentPanel = parentPanel;
 		JPanel newHeroForm = formPanel();
 		add(newHeroForm);
 	}
@@ -104,6 +105,7 @@ public class NewHeroDialog extends JDialog {
 							Hero newHero = HeroCreator.create("archer", heroName);
 							HeroCreator.saveHeroToDatabase(newHero);
 						}
+						parentPanel.upDateHeroList();
 						dispose();
 					} catch (WrongClassException error) {
 						errorLabel = new JLabel("Wrong class");

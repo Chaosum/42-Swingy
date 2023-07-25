@@ -21,20 +21,26 @@ import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import swingy.App;
 
+@Data
+@EqualsAndHashCode(callSuper=false)
 public class HeroSelection extends JPanel {
+	protected JScrollPane scrollPane;
+	protected JList<String> heroList;
 	public HeroSelection () {
 		super();
 		setLayout(new BoxLayout( this, BoxLayout.Y_AXIS));
 		setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 		add(createLabel("Select a hero:"));// Ajouter la JList à la JScrollPane
-		JScrollPane scrollPane = new JScrollPane(createHeroList());
+		heroList = createHeroList();
+		scrollPane = new JScrollPane(heroList);
 		scrollPane.setPreferredSize(new Dimension(200, (int) (this.getHeight() * 0.7)));
 		add(scrollPane);
 		add(Box.createRigidArea(new Dimension(0, 10)));//spacer
-		//new button
-		JButton newHero =setUpButton("New hero");
+		JButton newHero = setUpButton("New hero");//new button
 		add(newHero);
 		add(Box.createRigidArea(new Dimension(0, 10)));//spacer
 	}
@@ -47,19 +53,31 @@ public class HeroSelection extends JPanel {
 
 		newHero.addActionListener(new ActionListener() {
 			@Override
-            public void actionPerformed(ActionEvent e) {
-                System.out.println("Bouton New hero cliqué !");
-				NewHeroDialog newHeroDialog = new NewHeroDialog((JFrame) SwingUtilities.getWindowAncestor(HeroSelection.this));
-                newHeroDialog.setVisible(true);
-            }
+			public void actionPerformed(ActionEvent e) {
+				System.out.println("Bouton New hero cliqué !");
+				callNewHeroDialog();
+			}
 		});
 		return (newHero);
+	}
+
+	private void callNewHeroDialog() {
+		NewHeroDialog newHeroDialog = new NewHeroDialog((JFrame) SwingUtilities.getWindowAncestor(HeroSelection.this), this);
+		newHeroDialog.setVisible(true);
 	}
 
 	private JLabel createLabel(String text) {
 		JLabel label = new JLabel(text);
 		label.setAlignmentX(Component.CENTER_ALIGNMENT); // Centre le texte horizontalement
 		return label;
+	}
+
+	public void upDateHeroList() {
+		JList<String> heroList = createHeroList();
+		heroList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		scrollPane.setViewportView(heroList);
+		revalidate();
+		repaint();
 	}
 
 	private JList<String> createHeroList() {

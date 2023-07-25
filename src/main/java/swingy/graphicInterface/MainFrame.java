@@ -20,12 +20,12 @@ public class MainFrame extends JFrame {
 		this.setLocationRelativeTo(null);
 		this.setLayout(new BorderLayout());
 		JPanel contentPane = (JPanel) this.getContentPane();
-
 		//WEST
-		HeroSelection heroSlection = new HeroSelection();
-		contentPane.add(heroSlection, BorderLayout.WEST);
+		HeroSelection heroSelection = new HeroSelection();
+		contentPane.add(heroSelection, BorderLayout.WEST);
 		//CENTER
-		//contentPane.add(displayHeroStats(), BorderLayout.CENTER); //display hero stats dans une boite de texte
+		DisplayHeroStats displayHeroStats = new DisplayHeroStats(heroSelection.getHeroList()); // a voir pour mettre un listener sur le heroselection
+		contentPane.add(displayHeroStats, BorderLayout.CENTER); //display hero stats dans une boite de texte
 		JButton playButton = new JButton("Play");
 		contentPane.add(playButton, BorderLayout.SOUTH);
 		//NORTH
