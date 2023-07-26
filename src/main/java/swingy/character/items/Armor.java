@@ -6,5 +6,7 @@ import javax.persistence.Entity;
 public class Armor extends Items{
 	protected String aMeterial;
 	public Armor() {
+		super();
+		this.name = "";
 	}
 }

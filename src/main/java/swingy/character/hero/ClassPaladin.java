@@ -6,6 +6,9 @@ import swingy.character.items.SwordAndShield;
 
 @Entity
 public class ClassPaladin extends Hero {
+	public ClassPaladin() {
+		super();
+	}
 	public ClassPaladin(String name) {
 		super(name);
 		this.typeName = "Paladin";

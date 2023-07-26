@@ -21,9 +21,10 @@
 			<property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL95Dialect"/>
 
 			<!-- Options pour Hibernate -->
+			<property name="javax.persistence.logging.level" value="NONE"/>
 			<property name="hibernate.hbm2ddl.auto" value="update"/> <!--create = reset a chaque boot / update = persistant + append / validate = uniquement verif si shema good-->
-			<property name="hibernate.show_sql" value="true"/> <!-- true affiche les commande sql dans la console-->
-			<property name="hibernate.format_sql" value="true"/> <!-- si true les requetes dans la console sont formatées de facon lisible-->
+			<property name="hibernate.show_sql" value="false"/> <!-- true affiche les commande sql dans la console-->
+			<property name="hibernate.format_sql" value="false"/> <!-- si true les requetes dans la console sont formatées de facon lisible-->
 		</properties>
 	</persistence-unit>
 

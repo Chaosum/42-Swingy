@@ -8,6 +8,9 @@ import swingy.character.items.Wand;
 
 @Entity
 public class ClassMage extends Hero{
+	public ClassMage() {
+		super();
+	}
 	public ClassMage(String name) {
 		super(name);
 		this.typeName = "Mage";
@@ -16,7 +19,6 @@ public class ClassMage extends Hero{
 		this.currentCharge = 0;
 		this.specialChargeCounter = 3;
 		this.weapon = new Wand();
-		this.weaknesses.add("Dragon");
 	}
 	@Override
 	public int special() {

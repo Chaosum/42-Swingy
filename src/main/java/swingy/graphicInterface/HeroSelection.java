@@ -20,16 +20,17 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
 import swingy.App;
 
-@Data
-@EqualsAndHashCode(callSuper=false)
+
 public class HeroSelection extends JPanel {
 	protected JScrollPane scrollPane;
 	protected JList<String> heroList;
+	protected DisplayHeroStats displayHeroStats;
+
 	public HeroSelection () {
 		super();
 		setLayout(new BoxLayout( this, BoxLayout.Y_AXIS));
@@ -73,8 +74,7 @@ public class HeroSelection extends JPanel {
 	}
 
 	public void upDateHeroList() {
-		JList<String> heroList = createHeroList();
-		heroList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		heroList = createHeroList();
 		scrollPane.setViewportView(heroList);
 		revalidate();
 		repaint();
@@ -86,7 +86,7 @@ public class HeroSelection extends JPanel {
 		heroList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		try {
 			Statement statement = App.modifyDatabase(App.connectToDatabase());
-			ResultSet resultSet = statement.executeQuery("SELECT * FROM heros");
+			ResultSet resultSet = statement.executeQuery("SELECT * FROM Hero");
 			while (resultSet.next()) {
 				String name = resultSet.getString("name") + " " + resultSet.getString("title");
 				heroListModel.addElement(name);
@@ -94,6 +94,28 @@ public class HeroSelection extends JPanel {
 		} catch (SQLException e) {
 			System.out.println("createHero exception : " + e.getMessage());
 		}
+		heroList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		heroList.addListSelectionListener(new ListSelectionListener() {
+			@Override
+			public void valueChanged(ListSelectionEvent e) {
+				heroListListener( e);
+			}
+		});
 		return (heroList);
+	}
+	
+	private void heroListListener(ListSelectionEvent e) {
+		if (!e.getValueIsAdjusting()) {
+			System.out.println("coucou " + getHeroList().getSelectedValue() + " ou sinon " + e.toString() + " index " + e.getFirstIndex() + " " + e.getLastIndex());
+			displayHeroStats.upDateHeroListStat(getHeroList().getSelectedValue()); // DisplayHeroStats
+		}
+	}
+	
+	public JList<String> getHeroList() {
+		return this.heroList;
+	}
+
+	public void setDisplayHeroStats(DisplayHeroStats displayHeroStats) {
+		this.displayHeroStats = displayHeroStats;
 	}
 }

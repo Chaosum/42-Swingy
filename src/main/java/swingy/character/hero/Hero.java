@@ -35,12 +35,25 @@ public class Hero extends Characters {
 	protected String	specialAttack;
 	protected int		currentCharge;
 	protected int		specialChargeCounter;
-	protected int		specialDamages;
 	protected String	specialType;
 	protected int		fleeChances;
 	
+	public Hero () {
+		super();
+		title = "";
+		this.fleeChances = 0;
+		this.experience = 0;
+		setNextLevelXp();
+		this.weapon = new Weapon();
+		this.helmet = new Helmet();
+		this.armor = new Armor();
+	}
+
 	protected Hero(String name) {
 		super(name);
+		this.weapon = new Weapon();
+		this.helmet = new Helmet();
+		this.armor = new Armor();
 		title = "";
 		this.fleeChances = 50;
 		this.experience = 0;

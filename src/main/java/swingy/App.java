@@ -31,21 +31,21 @@ public class App {
 		ResultSet resultSet = statement.executeQuery("SELECT 1 FROM pg_database WHERE datname = '" + databaseName + "'");
 		if (resultSet.next()) {
 			System.out.println("La base de données '" + databaseName + "' existe déjà.");
-			resultSet = statement.executeQuery("SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_name = 'heros')");
+			resultSet = statement.executeQuery("SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_name = 'Hero')");
 			if (resultSet.next()) {
 				boolean tableExists = resultSet.getBoolean(1);
 				if (tableExists) {
-					System.out.println("La table 'heros' existe déjà.");
+					System.out.println("La table 'Hero' existe déjà.");
 				} else {
-					statement.executeUpdate("CREATE TABLE heros (name VARCHAR(20) PRIMARY KEY, title VARCHAR(50))");
-					System.out.println("La table 'heros' a été créée avec succès.");
+					statement.executeUpdate("CREATE TABLE Hero (name VARCHAR(20) PRIMARY KEY, title VARCHAR(50))");
+					System.out.println("La table 'Hero' a été créée avec succès.");
 				}
 			}
 		}
 		else {
 			statement.executeUpdate("CREATE DATABASE " + databaseName);
 			System.out.println("La base de données '" + databaseName + "' a été créée avec succès.");
-			statement.executeUpdate("CREATE TABLE heros (name VARCHAR(20) PRIMARY KEY, title VARCHAR(50))");
+			statement.executeUpdate("CREATE TABLE Hero (name VARCHAR(20) PRIMARY KEY, title VARCHAR(50))");
 		}
 	}
 
@@ -63,7 +63,8 @@ public class App {
 		try {
 			startGame();
 		} catch (Exception e) {
-			// TODO: handle exception
+			MainFrame.closeEntityManagerFactory();
+			System.out.println(e.getMessage());
 		}
 	}
 }

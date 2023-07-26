@@ -74,7 +74,7 @@ public class Map {
 		this.posX +=1;
 		this.upDatePos();
 	}
-	public void upDatePos() {
+	public void upDatePos() {   
 		int xAdvancement = posX - (size / 2) + 1; 
 		int yAdvancement = posY - (size / 2) + 1;
 		this.advancement = (xAdvancement < 0 ? xAdvancement * -1: xAdvancement) + (yAdvancement < 0 ? yAdvancement * -1: yAdvancement);

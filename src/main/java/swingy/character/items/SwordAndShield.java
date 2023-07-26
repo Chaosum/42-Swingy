@@ -3,8 +3,6 @@ package swingy.character.items;
 
 import javax.persistence.Entity;
 
-import swingy.character.hero.Hero;
-
 @Entity
 public class SwordAndShield extends Weapon {
 	public SwordAndShield() {
@@ -16,9 +14,5 @@ public class SwordAndShield extends Weapon {
 		this.attackModifier = 5;
 		this.armorModifier = 10;
 		this.specialEffects.add("Block");
-	}
-	public void special() {
-	}
-	public void special(Hero hero) {
 	}
 }

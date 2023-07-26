@@ -52,8 +52,8 @@ public class NewHeroDialog extends JDialog {
 	private JPanel formPanel() {
 		JPanel formPanel = new JPanel();
 		formPanel.setLayout(new BoxLayout( formPanel, BoxLayout.Y_AXIS));
-		name = new JTextField("Hero name");
-		name.setPreferredSize(new Dimension(100, 30));
+		name = new JTextField("Name");
+		name.setMaximumSize(new Dimension(1000, 40));
 		ButtonGroup classChoice = new ButtonGroup();
 		paladin = new JCheckBox("paladin");
 		mage = new JCheckBox("mage");
@@ -105,25 +105,31 @@ public class NewHeroDialog extends JDialog {
 							Hero newHero = HeroCreator.create("archer", heroName);
 							HeroCreator.saveHeroToDatabase(newHero);
 						}
-						parentPanel.upDateHeroList();
+						else {
+							throw new WrongClassException();
+						}
 						dispose();
+						parentPanel.upDateHeroList();
 					} catch (WrongClassException error) {
-						errorLabel = new JLabel("Wrong class");
-						return ;
+						errorLabel.setText("Wrong class");
+						repaint();
 					} catch (EntityExistsException error) {
-						errorLabel = new JLabel("Name already taken");
-						return ;
+						errorLabel.setText("Name already taken");
+						repaint();
 					}
 				} else { // Les contraintes ne sont pas valides, traitez les violations
 					StringBuilder errorMessage = new StringBuilder();
 					for (ConstraintViolation<NewHeroDialog> violation : violations) {
 						errorMessage.append(violation.getMessage()).append("\n");
 					}
-					errorLabel = new JLabel(errorMessage.toString());
-					return ;
+					errorLabel.setText("Wrong Name format [a-zA-Z][a-z]");
+					repaint();
 				}
 			}
 		});
+		paladin.setAlignmentX(javax.swing.Box.CENTER_ALIGNMENT); 
+		mage.setAlignmentX(javax.swing.Box.CENTER_ALIGNMENT); 
+		archer.setAlignmentX(javax.swing.Box.CENTER_ALIGNMENT); 
 		formPanel.add(errorLabel);
 		formPanel.add(name);
 		formPanel.add(paladin);
@@ -131,5 +137,5 @@ public class NewHeroDialog extends JDialog {
 		formPanel.add(archer);
 		formPanel.add(create);
 		return (formPanel);
-	} 
+	}
 }

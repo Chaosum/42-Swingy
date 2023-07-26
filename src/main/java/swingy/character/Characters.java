@@ -1,5 +1,6 @@
 package swingy.character;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CollectionTable;
@@ -15,7 +16,7 @@ import swingy.character.hero.DeathException;
 import swingy.character.items.Weapon;
 
 @Entity
-@Table(name = "heros")
+@Table(name = "Hero")
 @Data
 public abstract class Characters {
 	@Id
@@ -37,7 +38,8 @@ public abstract class Characters {
 	public abstract void	takeDamages(int damages, Weapon weapon, Characters from) throws DeathException;
 	
 	protected Characters() {
-		this.name = "NaN";
+		weaknesses = new ArrayList<String>();
+		this.name = "";
 		this.hp = 100;
 		this.maxHp = 100;
 		this.level = 1;
@@ -47,10 +49,14 @@ public abstract class Characters {
 		this.critModifier = 2;
 	}
 	protected Characters(String name) {
+		weaknesses = new ArrayList<String>();
 		this.name = name;
-		this.hp = 0;
-		this.level = 0;
+		this.hp = 100;
+		this.maxHp = 100;
+		this.level = 1;
 		this.attackValue = 0;
 		this.armorValue = 0;
+		this.critChance = 10;
+		this.critModifier = 2;
 	}
 }

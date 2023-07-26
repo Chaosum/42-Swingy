@@ -18,8 +18,7 @@ public class Wand extends Weapon {
 		this.attackModifier = 3;
 		this.specialEffects.add("Passiv");
 	}
-
-	public void special() {}
+	@Override
 	public void special(Hero hero){
 		Random rand = new Random();
 		if (rand.nextInt(10) < 1) {
