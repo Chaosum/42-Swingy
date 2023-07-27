@@ -15,7 +15,7 @@ public class ClassMage extends Hero{
 		super(name);
 		this.typeName = "Mage";
 		this.specialAttack = "fireball";
-		this.specialType = "attack";
+		this.specialType = "activ";
 		this.currentCharge = 0;
 		this.specialChargeCounter = 3;
 		this.weapon = new Wand();

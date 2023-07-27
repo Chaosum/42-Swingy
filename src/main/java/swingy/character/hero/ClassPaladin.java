@@ -13,7 +13,7 @@ public class ClassPaladin extends Hero {
 		super(name);
 		this.typeName = "Paladin";
 		this.specialAttack = "quick heal";
-		this.specialType = "support";
+		this.specialType = "activ";
 		this.currentCharge = 0;
 		this.specialChargeCounter = 6;
 		this.weapon = new SwordAndShield();

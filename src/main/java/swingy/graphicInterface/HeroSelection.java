@@ -27,9 +27,9 @@ import swingy.App;
 
 
 public class HeroSelection extends JPanel {
-	protected JScrollPane scrollPane;
-	protected JList<String> heroList;
-	protected DisplayHeroStats displayHeroStats;
+	private JScrollPane scrollPane;
+	private JList<String> heroList;
+	private DisplayHeroStats displayHeroStats;
 
 	public HeroSelection () {
 		super();
@@ -106,7 +106,6 @@ public class HeroSelection extends JPanel {
 	
 	private void heroListListener(ListSelectionEvent e) {
 		if (!e.getValueIsAdjusting()) {
-			System.out.println("coucou " + getHeroList().getSelectedValue() + " ou sinon " + e.toString() + " index " + e.getFirstIndex() + " " + e.getLastIndex());
 			displayHeroStats.upDateHeroListStat(getHeroList().getSelectedValue()); // DisplayHeroStats
 		}
 	}

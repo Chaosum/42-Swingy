@@ -21,6 +21,7 @@ public class ClassArcher extends Hero {
 		this.fleeChances = 75;
 		this.critChance = 50;
 		this.critModifier = 4;
+		this.specialDescription = "Highter chance to run\nHighter crit chance\nHighter crit modifier\nCan see next case";
 	}
 
 	@Override

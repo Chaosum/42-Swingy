@@ -37,6 +37,7 @@ public class Hero extends Characters {
 	protected int		specialChargeCounter;
 	protected String	specialType;
 	protected int		fleeChances;
+	protected String	specialDescription;
 	
 	public Hero () {
 		super();
@@ -47,6 +48,7 @@ public class Hero extends Characters {
 		this.weapon = new Weapon();
 		this.helmet = new Helmet();
 		this.armor = new Armor();
+		this.specialDescription = "";
 	}
 
 	protected Hero(String name) {
@@ -57,6 +59,7 @@ public class Hero extends Characters {
 		title = "";
 		this.fleeChances = 50;
 		this.experience = 0;
+		this.specialDescription = "";
 		setNextLevelXp();
 	}
 
@@ -176,6 +179,13 @@ public class Hero extends Characters {
 			this.hp = this.maxHp / 2 + this.hpBonus;
 			//mob killed - Victory
 		}
+	}
+
+	public boolean isSpecialUp() {
+		if (this.currentCharge < this.specialChargeCounter) {
+			return (false);
+		}
+		return (true);
 	}
 
 	//Getters et setters

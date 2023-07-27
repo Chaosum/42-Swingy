@@ -21,8 +21,10 @@ import swingy.map.Map;
 public class MainFrame extends JFrame {
 	private static EntityManagerFactory entityManagerFactory;
 	public static EntityManager entityManager;
-	protected DisplayHeroStats displayHeroStats;
-	protected HeroSelection heroSelection;
+	private DisplayHeroStats displayHeroStats;
+	private HeroSelection heroSelection;
+	private JPanel windowsPane;
+	private Game game;
 
 	public MainFrame() {
 		super("Swingy");
@@ -32,34 +34,49 @@ public class MainFrame extends JFrame {
 		this.setSize(1000 , 500);
 		this.setLocationRelativeTo(null);
 		this.setLayout(new BorderLayout());
-		JPanel contentPane = (JPanel) this.getContentPane();
+		windowsPane = (JPanel) this.getContentPane();
+		mainMenu();
+	}
+	public static void closeEntityManagerFactory() {
+		if (entityManagerFactory != null && entityManagerFactory.isOpen()) {
+			entityManagerFactory.close();
+        }
+    }
+	
+	private void mainMenu() {
+		windowsPane.removeAll();
 		//WEST
 		heroSelection = new HeroSelection();
-		contentPane.add(heroSelection, BorderLayout.WEST);
+		windowsPane.add(heroSelection, BorderLayout.WEST);
 		//CENTER
-		displayHeroStats = new DisplayHeroStats(heroSelection.getHeroList().getSelectedValue()); // a voir pour mettre un listener sur le heroselection
-		heroSelection.setDisplayHeroStats(displayHeroStats);
-		contentPane.add(displayHeroStats, BorderLayout.CENTER); //display hero stats dans une boite de texte
+		displayHeroStats = new DisplayHeroStats(heroSelection.getHeroList().getSelectedValue());
+		heroSelection.setDisplayHeroStats(displayHeroStats); // pour le listener
+		windowsPane.add(displayHeroStats, BorderLayout.CENTER);
 		//SOUTH
 		JButton playButton =  new JButton("Play");
-		contentPane.add(playButton, BorderLayout.SOUTH);
+		windowsPane.add(playButton, BorderLayout.SOUTH);
 		playButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				enterTheDungeon();
+				if (heroSelection.getHeroList().getSelectedValue() != null) {
+					enterTheDungeon();
+				}
 			}
 		});
 		//NORTH
-		//contentPane.add(optionIcon(), BorderLayout.NORTH); //display une icone clickable qui ouvre une pop-up d'option
+		//windowsPane.add(optionIcon(), BorderLayout.NORTH); //display une icone clickable qui ouvre une pop-up d'option
+		validate();
+		repaint();
 	}
-	public static void closeEntityManagerFactory() {
-        if (entityManagerFactory != null && entityManagerFactory.isOpen()) {
-            entityManagerFactory.close();
-        }
-    }
-
+	
 	private void enterTheDungeon(){
 		Hero hero = this.displayHeroStats.getHero();
 		Map map = new Map(hero);
+		windowsPane.removeAll();
+		game = new Game(map, displayHeroStats);
+		windowsPane.add(game, BorderLayout.CENTER);
+		validate();
+		repaint();
 	}
+
 }

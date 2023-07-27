@@ -10,27 +10,30 @@ import swingy.character.hero.SpecialIsReadyException;
 
 @Data
 public class Map {
-	protected int mapLevel;
-	protected int size;
-	protected List<String> map;
-	protected int difficulty;
-	protected Hero currentHero;
-	protected int posX;
-	protected int posY;
-	protected int advancement;
+	private int mapLevel;
+	private int size;
+	private List<String> map;
+	private int difficulty;
+	private Hero hero;
+	private int posX;
+	private int posY;
+	private int prevPosX;
+	private int prevPosY;
+	private int advancement;
 
 
 	public Map(Hero hero){
-		this.currentHero = hero;
-		this.mapLevel = currentHero.getLevel();
+		this.hero = hero;
+		this.mapLevel = hero.getLevel();
 		this.size = ((this.mapLevel - 1) * 5) + 10 - (this.mapLevel % 2);
 		initPosition();
 		this.difficulty = 60 - (10 * this.mapLevel % 2);
-		this.map = new ArrayList<String> ();
+		this.map = new ArrayList<String> (this.size);
 		Random rand = new Random();
 		int i = 0;
 		while (i < this.size) {
 			int j = 0;
+			map.add("");
 			while (j < this.size) {
 				if (j == 0 || j == this.size - 1){
 					this.map.set(i, this.map.get(i) + "B");
@@ -52,29 +55,39 @@ public class Map {
 		this.map.set(size / 2 + 1, this.map.get(size / 2 + 1) + ".");
 	}
 
-	protected void	initPosition() {
+	private void	initPosition() {
+		this.prevPosX = this.posX;
+		this.prevPosY = this.posY;
 		this.posX =(size / 2) + 1;
 		this.posY =(size / 2) + 1;
 		this.advancement = 0;
 	}
 
 	public void moveUp() {
+		this.prevPosX = this.posX;
+		this.prevPosY = this.posY;
 		this.posY -=1;
 		this.upDatePos();
 	}
 	public void moveDown() {
+		this.prevPosX = this.posX;
+		this.prevPosY = this.posY;
 		this.posY +=1;
 		this.upDatePos();
 	}
 	public void moveLeft() {
+		this.prevPosX = this.posX;
+		this.prevPosY = this.posY;
 		this.posX -=1;
 		this.upDatePos();
 	}
 	public void moveRight() {
+		this.prevPosX = this.posX;
+		this.prevPosY = this.posY;
 		this.posX +=1;
 		this.upDatePos();
 	}
-	public void upDatePos() {   
+	public void upDatePos() {
 		int xAdvancement = posX - (size / 2) + 1; 
 		int yAdvancement = posY - (size / 2) + 1;
 		this.advancement = (xAdvancement < 0 ? xAdvancement * -1: xAdvancement) + (yAdvancement < 0 ? yAdvancement * -1: yAdvancement);
@@ -85,7 +98,7 @@ public class Map {
 			//fight here en fonction de l'avancement definir le level / le type de mob
 			//if (win) set char a .
 			try {
-				this.currentHero.chargeUp();
+				this.hero.chargeUp();
 			} catch (SpecialIsReadyException e) {
 				// agir en fonction -> rendre le bouton disponible
 			}
@@ -95,7 +108,7 @@ public class Map {
 		else if (event == '?') {
 			//evenement ici -> random event (heal ou malus a voir)
 			try {
-				this.currentHero.chargeUp();
+				this.hero.chargeUp();
 			} catch (SpecialIsReadyException e) {
 				// agir en fonction -> rendre le bouton disponible
 			}
