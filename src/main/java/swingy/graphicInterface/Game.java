@@ -5,6 +5,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -13,6 +15,7 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -26,13 +29,25 @@ public class Game extends JPanel{
 	private Map map;
 	private DisplayHeroStats displayHeroStats;
 	private JPanel leftZone;
+	private JPanel rightZone;
+
 	public Game(Map map, DisplayHeroStats displayHeroStats) {
 		this.map = map;
 		this.hero = map.getHero();
 		this.displayHeroStats = displayHeroStats;
 		setLayout(new BorderLayout());
 		playerZone();
+		mapZone();
 		add(leftZone, BorderLayout.WEST);
+		add(rightZone, BorderLayout.CENTER);
+	}
+
+	private void upDateRightZone() {
+		remove(rightZone);
+		mapZone();
+		add(rightZone, BorderLayout.CENTER);
+		validate();
+		repaint();
 	}
 
 	private void playerZone() {
@@ -57,11 +72,27 @@ public class Game extends JPanel{
 		direction.setLayout(new BorderLayout());
 		JPanel goLeftPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
 		JButton goLeftButton = new JButton("←");
+		goLeftButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// if we are not in event
+				map.moveLeft();
+				upDateRightZone();
+			}
+		});
 		goLeftPanel.add(goLeftButton);
 		goLeftPanel.setBorder(BorderFactory.createEmptyBorder(50, 0, 0, 0));
 
 		JPanel goRightPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
 		JButton goRightButton = new JButton("→");
+		goRightButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// if we are not in event
+				map.moveRight();
+				upDateRightZone();
+			}
+		});
 		goRightPanel.add(goRightButton);
 		goRightPanel.setBorder(BorderFactory.createEmptyBorder(50, 0, 0, 0));
 
@@ -73,17 +104,31 @@ public class Game extends JPanel{
 		JButton goTopButton = new JButton("↑");
 		JButton actionButton = new JButton("@");
 		JButton goBotButton = new JButton("↓");
+		goTopButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// if we are not in event
+				map.moveUp();
+				upDateRightZone();
+			}
+		});
+		goBotButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// if we are not in event
+				map.moveDown();
+				upDateRightZone();
+			}
+		});
 		goBotPanel.setBorder(BorderFactory.createEmptyBorder(25, 0, 0, 0));
 		goBotPanel.add(goTopButton);
 		goBotPanel.add(Box.createRigidArea(new Dimension(0, 5))); // spacer
 		goBotPanel.add(actionButton);
 		goBotPanel.add(Box.createRigidArea(new Dimension(0, 5))); // spacer
 		goBotPanel.add(goBotButton);
-		//JPanel actionPanel = new JPanel(new FlowLayout());
+
 		direction.add(goLeftPanel, BorderLayout.WEST);
 		direction.add(goRightPanel, BorderLayout.EAST);
-		//direction.add(goTopPanel, BorderLayout.NORTH);
-		//direction.add(actionPanel, BorderLayout.CENTER);
 		direction.add(goBotPanel, BorderLayout.CENTER);
 
 		direction.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
@@ -134,7 +179,64 @@ public class Game extends JPanel{
 			JLabel descriptionLine = new JLabel (descriptions[i]);
 			specialZone.add(descriptionLine);
 			i++;
+		} 
+	}
+
+	private void mapZone() {
+		rightZone = new JPanel();
+		int size = map.getSize();
+		rightZone.setLayout(new GridLayout(size, size));
+		int j = 0;
+		while(j < size) {
+			int i = 0;
+			while (i < size) {
+				if (i == map.getPosX() && j == map.getPosY()) {
+					JLabel mapCase = new JLabel("X");
+					mapCase.setHorizontalAlignment(SwingConstants.CENTER);
+					mapCase.setVerticalAlignment(SwingConstants.CENTER);
+					mapCase.setOpaque(true);
+					mapCase.setBackground(new Color(204,255,204));
+					mapCase.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
+					rightZone.add(mapCase);
+				}
+				else if (trackerCase(i, j)) {
+					JLabel mapCase = new JLabel("" + map.getMap().get(i).charAt(j));
+					mapCase.setHorizontalAlignment(SwingConstants.CENTER);
+					mapCase.setVerticalAlignment(SwingConstants.CENTER);
+					mapCase.setBorder(BorderFactory.createLineBorder(Color.lightGray, 1));
+					rightZone.add(mapCase);
+				}
+				else if (map.getExploredMap().get(i).charAt(j) != ' '){
+					JLabel mapCase = new JLabel("" + map.getExploredMap().get(i).charAt(j));
+					mapCase.setHorizontalAlignment(SwingConstants.CENTER);
+					mapCase.setVerticalAlignment(SwingConstants.CENTER);
+					mapCase.setOpaque(true);
+					mapCase.setBackground(Color.lightGray);
+					mapCase.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
+					rightZone.add(mapCase);
+				}
+				else {
+					rightZone.add(new JLabel(" "));
+				}
+				i++;
+			}
+			j++;
 		}
+		rightZone.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
+	}
+
+	private boolean trackerCase(int x, int y) {
+		int top = map.getPosY() - 1;
+		int bot = map.getPosY() + 1;
+		int left = map.getPosX() - 1;
+		int right = map.getPosX() + 1;
+		if (hero.getSpecialAttack().contains("tracker")
+			&& ((x == map.getPosX() && (y == top || y == bot))
+			|| (y == map.getPosY() && (x == left || x == right)))
+			&& map.getExploredMap().get(x).charAt(y) != '.') {
+			return (true);
+		}
+		return (false);
 	}
 
 }
