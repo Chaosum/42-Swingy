@@ -43,7 +43,7 @@ public abstract class Characters {
 		this.hp = 100;
 		this.maxHp = 100;
 		this.level = 1;
-		this.attackValue = 0;
+		this.attackValue = 1;
 		this.armorValue = 0;
 		this.critChance = 10;
 		this.critModifier = 2;

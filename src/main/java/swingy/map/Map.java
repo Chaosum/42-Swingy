@@ -6,7 +6,6 @@ import java.util.Random;
 
 import lombok.Data;
 import swingy.character.hero.Hero;
-import swingy.character.hero.SpecialIsReadyException;
 
 @Data
 public class Map {
@@ -21,7 +20,6 @@ public class Map {
 	private int prevPosX;
 	private int prevPosY;
 	private int advancement;
-
 
 	public Map(Hero hero){
 		this.hero = hero;
@@ -96,12 +94,12 @@ public class Map {
 			this.exploredMap.set(posX, left + "." + right);
 
 		}
-		//else if (this.exploredMap.get(prevPosX).charAt(prevPosY) != '.') { //flee case
-		//	String left = this.exploredMap.get(prevPosX).substring(0, prevPosY);
-		//	char middle = this.map.get(prevPosX).charAt(prevPosY);
-		//	String right = this.exploredMap.get(prevPosX).substring(prevPosY + 1);
-		//	this.exploredMap.set(prevPosX, left + middle + right);
-		//}
+		else if (this.exploredMap.get(prevPosX).charAt(prevPosY) != '.') { //flee case
+			String left = this.exploredMap.get(prevPosX).substring(0, prevPosY);
+			char middle = this.map.get(prevPosX).charAt(prevPosY);
+			String right = this.exploredMap.get(prevPosX).substring(prevPosY + 1);
+			this.exploredMap.set(prevPosX, left + middle + right);
+		}
 	}
 
 	public void moveUp() {
@@ -110,7 +108,6 @@ public class Map {
 		this.posY -=1;
 		if (posY < 0)
 			posY++;
-		this.upDatePos();
 	}
 	public void moveDown() {
 		this.prevPosX = this.posX;
@@ -118,7 +115,6 @@ public class Map {
 		this.posY +=1;
 		if (posY /size > 0)
 			posY--;
-		this.upDatePos();
 	}
 	public void moveLeft() {
 		this.prevPosX = this.posX;
@@ -126,7 +122,6 @@ public class Map {
 		this.posX -=1;
 		if (posX < 0)
 			posX++;
-		this.upDatePos();
 	}
 	public void moveRight() {
 		this.prevPosX = this.posX;
@@ -134,38 +129,12 @@ public class Map {
 		this.posX +=1;
 		if (posX / size > 0)
 			posX--;
-		this.upDatePos();
 	}
-	public void upDatePos() {
-		int xAdvancement = posX - (size / 2); 
-		int yAdvancement = posY - (size / 2);
-		this.advancement = (xAdvancement < 0 ? xAdvancement * -1: xAdvancement) + (yAdvancement < 0 ? yAdvancement * -1: yAdvancement);
+	public char upDatePos() {
+		char event = map.get(posY).charAt(posX);
 		String left = this.map.get(posX).substring(0, posY);
 		String right = this.map.get(posX).substring(posY + 1);
-		char event = map.get(posY).charAt(posX);
-		if (event == 'M' || event == 'Z' || event == 'V' || event == 'S'
-			|| event == 'D' || event == 'L' || event == 'O') {
-			//fight here en fonction de l'avancement definir le level / le type de mob
-			//if (win) set char a .
-			try {
-				this.hero.chargeUp();
-			} catch (SpecialIsReadyException e) {
-				// agir en fonction -> rendre le bouton disponible
-			}
-		}
-		else if (event == '?') {
-			//evenement ici -> random event (heal ou malus a voir)
-			try {
-				this.hero.chargeUp();
-			} catch (SpecialIsReadyException e) {
-				// agir en fonction -> rendre le bouton disponible
-			}
-		}
-		else if (event == 'B') {
-			//fight boss
-			//fin de la map si win
-		}
 		map.set(posY, left + "." + right);
-		upDateExploredMap();
+		return (event);
 	}
 }

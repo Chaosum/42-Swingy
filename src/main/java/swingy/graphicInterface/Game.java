@@ -20,6 +20,8 @@ import javax.swing.SwingConstants;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import swingy.character.hero.Hero;
+import swingy.character.randoms.Mob;
+import swingy.character.randoms.MobSpawner;
 import swingy.map.Map;
 
 @Data
@@ -29,23 +31,35 @@ public class Game extends JPanel{
 	private Map map;
 	private DisplayHeroStats displayHeroStats;
 	private JPanel leftZone;
+	private JPanel centerZone;
 	private JPanel rightZone;
 
-	public Game(Map map, DisplayHeroStats displayHeroStats) {
+	public Game(Map map, DisplayHeroStats displayHeroStats) { 
 		this.map = map;
 		this.hero = map.getHero();
 		this.displayHeroStats = displayHeroStats;
 		setLayout(new BorderLayout());
 		playerZone();
 		mapZone();
+		eventZone();
 		add(leftZone, BorderLayout.WEST);
-		add(rightZone, BorderLayout.CENTER);
+		add(centerZone, BorderLayout.CENTER);
+		add(rightZone, BorderLayout.EAST);
 	}
 
-	private void upDateRightZone() {
+	private void upDateEventZone() { // voir pour update player zone aussi
 		remove(rightZone);
+		eventZone();
+		add(rightZone, BorderLayout.EAST);
+		validate();
+		repaint();
+	}
+
+
+	private void updateCenterZone() {
+		remove(centerZone);
 		mapZone();
-		add(rightZone, BorderLayout.CENTER);
+		add(centerZone, BorderLayout.CENTER);
 		validate();
 		repaint();
 	}
@@ -77,7 +91,8 @@ public class Game extends JPanel{
 			public void actionPerformed(ActionEvent e) {
 				// if we are not in event
 				map.moveLeft();
-				upDateRightZone();
+				upDateEventZone();
+				updateCenterZone();
 			}
 		});
 		goLeftPanel.add(goLeftButton);
@@ -90,7 +105,9 @@ public class Game extends JPanel{
 			public void actionPerformed(ActionEvent e) {
 				// if we are not in event
 				map.moveRight();
-				upDateRightZone();
+				upDateEventZone();
+
+				updateCenterZone();
 			}
 		});
 		goRightPanel.add(goRightButton);
@@ -102,14 +119,15 @@ public class Game extends JPanel{
 		goBotPanel.setLayout(new BoxLayout(goBotPanel, BoxLayout.Y_AXIS));
 		goBotPanel.setAlignmentX(CENTER_ALIGNMENT);
 		JButton goTopButton = new JButton("↑");
-		JButton actionButton = new JButton("@");
+		JButton actionButton = new JButton("+");
 		JButton goBotButton = new JButton("↓");
 		goTopButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// if we are not in event
 				map.moveUp();
-				upDateRightZone();
+				upDateEventZone();
+				updateCenterZone();
 			}
 		});
 		goBotButton.addActionListener(new ActionListener() {
@@ -117,7 +135,8 @@ public class Game extends JPanel{
 			public void actionPerformed(ActionEvent e) {
 				// if we are not in event
 				map.moveDown();
-				upDateRightZone();
+				upDateEventZone();
+				updateCenterZone();
 			}
 		});
 		goBotPanel.setBorder(BorderFactory.createEmptyBorder(25, 0, 0, 0));
@@ -137,6 +156,39 @@ public class Game extends JPanel{
 
 
 		return (panel);
+	}
+
+	private void eventZone() {
+		rightZone = new JPanel();
+		rightZone.setLayout(new BoxLayout(rightZone, BoxLayout.Y_AXIS));
+		mapEvent();
+		rightZone.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
+		add(rightZone, BorderLayout.EAST);
+	}
+
+	private void mapEvent() {
+		char event = map.upDatePos();
+		boolean flee = false;
+		int xAdvancement = map.getPosX() - (map.getSize() / 2); 
+		int yAdvancement = map.getPosY() - (map.getSize() / 2);
+		int advancement = (xAdvancement < 0 ? xAdvancement * -1: xAdvancement) + (yAdvancement < 0 ? yAdvancement * -1: yAdvancement);
+		if (event == 'M') {
+			Mob ennemy = MobSpawner.createRandom(event, advancement, map.getMapLevel());
+			//combatEvent();
+		}
+		else if (event == 'B') {
+			Mob ennemy = MobSpawner.create("worldBoss", map.getMapLevel());
+			//combatEvent();
+		}
+		else if (event == '?') {
+			//mysteryEvent();
+		}
+		if (flee == false) {
+			String left = map.getMap().get(map.getPosX()).substring(0, map.getPosY());
+			String right = map.getMap().get(map.getPosX()).substring(map.getPosY() + 1);
+			map.getMap().set(map.getPosX(), left + "." + right);
+			map.upDateExploredMap();
+		}
 	}
 
 	private JPanel specialZoneSetUp() {
@@ -183,9 +235,9 @@ public class Game extends JPanel{
 	}
 
 	private void mapZone() {
-		rightZone = new JPanel();
+		centerZone = new JPanel();
 		int size = map.getSize();
-		rightZone.setLayout(new GridLayout(size, size));
+		centerZone.setLayout(new GridLayout(size, size));
 		int j = 0;
 		while(j < size) {
 			int i = 0;
@@ -197,14 +249,14 @@ public class Game extends JPanel{
 					mapCase.setOpaque(true);
 					mapCase.setBackground(new Color(204,255,204));
 					mapCase.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
-					rightZone.add(mapCase);
+					centerZone.add(mapCase);
 				}
 				else if (trackerCase(i, j)) {
 					JLabel mapCase = new JLabel("" + map.getMap().get(i).charAt(j));
 					mapCase.setHorizontalAlignment(SwingConstants.CENTER);
 					mapCase.setVerticalAlignment(SwingConstants.CENTER);
 					mapCase.setBorder(BorderFactory.createLineBorder(Color.lightGray, 1));
-					rightZone.add(mapCase);
+					centerZone.add(mapCase);
 				}
 				else if (map.getExploredMap().get(i).charAt(j) != ' '){
 					JLabel mapCase = new JLabel("" + map.getExploredMap().get(i).charAt(j));
@@ -213,16 +265,16 @@ public class Game extends JPanel{
 					mapCase.setOpaque(true);
 					mapCase.setBackground(Color.lightGray);
 					mapCase.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
-					rightZone.add(mapCase);
+					centerZone.add(mapCase);
 				}
 				else {
-					rightZone.add(new JLabel(" "));
+					centerZone.add(new JLabel(" "));
 				}
 				i++;
 			}
 			j++;
 		}
-		rightZone.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
+		centerZone.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
 	}
 
 	private boolean trackerCase(int x, int y) {
