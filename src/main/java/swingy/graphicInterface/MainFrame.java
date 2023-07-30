@@ -43,7 +43,7 @@ public class MainFrame extends JFrame {
         }
     }
 	
-	private void mainMenu() {
+	public void mainMenu() {
 		windowsPane.removeAll();
 		//WEST
 		heroSelection = new HeroSelection();
@@ -73,7 +73,7 @@ public class MainFrame extends JFrame {
 		Hero hero = this.displayHeroStats.getHero();
 		Map map = new Map(hero);
 		windowsPane.removeAll();
-		game = new Game(map, displayHeroStats);
+		game = new Game(map, displayHeroStats, this);
 		windowsPane.add(game, BorderLayout.CENTER);
 		validate();
 		repaint();

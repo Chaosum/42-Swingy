@@ -13,6 +13,7 @@ public class ClassMage extends Hero{
 	}
 	public ClassMage(String name) {
 		super(name);
+		this.attackValue = 5;
 		this.typeName = "Mage";
 		this.specialAttack = "fireball";
 		this.specialType = "activ";
@@ -22,15 +23,16 @@ public class ClassMage extends Hero{
 	}
 	@Override
 	public int special() {
+		int specialDmg = attackValue * 8;
 		if (this.currentCharge < this.specialChargeCounter) {
 			// not enouth charges
 			return (0);
 		}
 		this.currentCharge = 0;
 		Random rand = new Random();
-		if (rand.nextInt(10) < this.critChance) {
-			this.currentCharge = 3;
+		if (rand.nextInt(100) < this.critChance) {
+			this.currentCharge = this.specialChargeCounter - 1;
 		}
-		return (this.attackValue * 2);
+		return (specialDmg);
 	}
 }

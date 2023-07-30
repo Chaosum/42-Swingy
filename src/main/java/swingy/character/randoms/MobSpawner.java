@@ -6,7 +6,7 @@ public class MobSpawner {
 
 	public static Mob create(String className, int heroLevel) {
 		Mob newClass = new Mob("default");
-		if (className.toLowerCase() == "worldBoss"){
+		if (className.toLowerCase().contains("worldboss")){
 			newClass = new WorldBoss("Bolas");
 		}
 		return (newClass);

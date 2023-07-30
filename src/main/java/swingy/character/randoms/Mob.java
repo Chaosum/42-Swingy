@@ -19,6 +19,7 @@ public class Mob extends Characters{
 		super(name);
 		this.hostilityLevel = 0;
 		this.phrases = new ArrayList<String>();
+		weapon = new Weapon();
 	}
 
 	protected int checkBlockPower() {
@@ -63,7 +64,7 @@ public class Mob extends Characters{
 			throw new DeathException(this.name + "was killed" + from.getName() + "\'s " + weapon.getName());
 		}
 	}
-	public void dealDamages(Hero to) {
+	public void dealDamages(Hero to) throws DeathException {
 		int damages = this.attackValue + this.weapon.getAttackModifier();
 		int damagesModifier = 0;
 		if (this.weapon.getSpecialEffects().contains(to.getTypeName() + "Strength")) {
@@ -73,7 +74,7 @@ public class Mob extends Characters{
 		try {
 			to.takeDamages(damages, this.weapon, this);
 		} catch (DeathException e) {
-			//mob killed you - defeat
+			throw new DeathException(e.getMessage());
 		}
 	}
 

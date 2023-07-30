@@ -12,7 +12,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 
+import lombok.Data;
+
 @Entity
+@Data
 public class Items {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

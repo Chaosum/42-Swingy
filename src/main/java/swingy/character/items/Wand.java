@@ -5,7 +5,6 @@ import java.util.Random;
 import javax.persistence.Entity;
 
 import swingy.character.hero.Hero;
-import swingy.character.hero.SpecialIsReadyException;
 
 @Entity
 public class Wand extends Weapon {
@@ -23,11 +22,7 @@ public class Wand extends Weapon {
 		Random rand = new Random();
 		if (rand.nextInt(10) < 1) {
 			//display succes message
-			try {
 				hero.chargeUp();
-			} catch (SpecialIsReadyException e) {
-				// gerer special up
-			}
 		}
 	}
 }

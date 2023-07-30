@@ -53,7 +53,9 @@ public class Map {
 			}
 			i++;
 		}
-		this.map.set(size / 2, this.map.get(size / 2) + ".");
+		String left = this.map.get(size / 2).substring(0, size / 2);
+		String right = this.map.get(size / 2).substring((size / 2) + 1);
+		map.set(size / 2, left + "." + right);
 		System.out.println(map);
 		initExploredMap();
 	}
@@ -132,9 +134,9 @@ public class Map {
 	}
 	public char upDatePos() {
 		char event = map.get(posY).charAt(posX);
-		String left = this.map.get(posX).substring(0, posY);
-		String right = this.map.get(posX).substring(posY + 1);
-		map.set(posY, left + "." + right);
+		//String left = this.map.get(posX).substring(0, posY);
+		//String right = this.map.get(posX).substring(posY + 1);
+		//map.set(posY, left + "." + right);
 		return (event);
 	}
 }

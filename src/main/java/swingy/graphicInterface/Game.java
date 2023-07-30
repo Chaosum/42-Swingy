@@ -7,47 +7,67 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.util.Random;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import swingy.character.hero.DeathException;
 import swingy.character.hero.Hero;
+import swingy.character.hero.VictoryException;
 import swingy.character.randoms.Mob;
 import swingy.character.randoms.MobSpawner;
 import swingy.map.Map;
 
-@Data
-@EqualsAndHashCode(callSuper=false)
-public class Game extends JPanel{
-	private Hero hero;
-	private Map map;
+public class Game extends JPanel implements KeyListener{
+	private Hero	hero;
+	private Map		map;
 	private DisplayHeroStats displayHeroStats;
-	private JPanel leftZone;
-	private JPanel centerZone;
-	private JPanel rightZone;
+	private JPanel	leftZone;
+	private JPanel	centerZone;
+	private JPanel	rightZone;
+	private boolean	inCombat;
+	private boolean flee;
+	private boolean	victory;
+	private boolean	boss;
+	private Mob		ennemy;
+	private JCheckBox useSpecialButton;
+	private MainFrame parent;
 
-	public Game(Map map, DisplayHeroStats displayHeroStats) { 
+	public Game(Map map, DisplayHeroStats displayHeroStats, MainFrame parent) {
+		this.parent = parent;
 		this.map = map;
 		this.hero = map.getHero();
 		this.displayHeroStats = displayHeroStats;
+		this.inCombat = false;
+		this.victory = false;
+		this.boss = false;
+		this.flee = false;
+
 		setLayout(new BorderLayout());
+		requestFocusInWindow();
 		playerZone();
 		mapZone();
 		eventZone();
 		add(leftZone, BorderLayout.WEST);
 		add(centerZone, BorderLayout.CENTER);
 		add(rightZone, BorderLayout.EAST);
+		addKeyListener(this);
+		setFocusable(true);
+		setFocusTraversalKeysEnabled(false);
 	}
 
-	private void upDateEventZone() { // voir pour update player zone aussi
+	private void upDateEventZone() {
 		remove(rightZone);
 		eventZone();
 		add(rightZone, BorderLayout.EAST);
@@ -64,6 +84,14 @@ public class Game extends JPanel{
 		repaint();
 	}
 
+	private void updatePlayerZone() {
+		remove(leftZone);
+		playerZone();
+		add(leftZone, BorderLayout.WEST);
+		validate();
+		repaint();
+	}
+
 	private void playerZone() {
 		leftZone = new JPanel();
 		leftZone.setLayout(new BoxLayout(leftZone, BoxLayout.Y_AXIS));
@@ -76,9 +104,44 @@ public class Game extends JPanel{
 		JPanel panel = new JPanel();
 		panel.setLayout(new GridLayout(2, 2));
 		JButton attackButton = new JButton("Attack");
+		attackButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if(inCombat == true) {
+					try {
+						combatRound();
+						upDateEventZone();
+						updatePlayerZone();
+						if(inCombat == false) {
+							updateCenterZone();
+						}
+					} catch (DeathException ex) {
+						parent.mainMenu();
+					}
+				}
+			}
+		});
 		attackButton.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
 		panel.add(attackButton);
 		JButton runButton = new JButton("Run");
+		runButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if(inCombat == true && boss == false) {
+					flee = true;
+					try {
+						combatRound();
+						upDateEventZone();
+						updatePlayerZone();
+						if(inCombat == false) {
+							updateCenterZone();
+						}
+					} catch (DeathException ex) {
+						parent.mainMenu();
+					}
+				}
+			}
+		});
 		runButton.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
 		panel.add(runButton);
 		panel.add(specialZoneSetUp());
@@ -89,10 +152,11 @@ public class Game extends JPanel{
 		goLeftButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// if we are not in event
-				map.moveLeft();
-				upDateEventZone();
-				updateCenterZone();
+				if(inCombat == false) {
+					map.moveLeft();
+					upDateEventZone();
+					updateCenterZone();
+				}
 			}
 		});
 		goLeftPanel.add(goLeftButton);
@@ -103,18 +167,15 @@ public class Game extends JPanel{
 		goRightButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// if we are not in event
-				map.moveRight();
-				upDateEventZone();
-
-				updateCenterZone();
+				if(inCombat == false) {
+					map.moveRight();
+					upDateEventZone();
+					updateCenterZone();
+				}
 			}
 		});
 		goRightPanel.add(goRightButton);
 		goRightPanel.setBorder(BorderFactory.createEmptyBorder(50, 0, 0, 0));
-
-		//JPanel goTopPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-		//goTopPanel.add(goTopButton);
 		JPanel goBotPanel = new JPanel();
 		goBotPanel.setLayout(new BoxLayout(goBotPanel, BoxLayout.Y_AXIS));
 		goBotPanel.setAlignmentX(CENTER_ALIGNMENT);
@@ -124,19 +185,21 @@ public class Game extends JPanel{
 		goTopButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// if we are not in event
-				map.moveUp();
-				upDateEventZone();
-				updateCenterZone();
+				if(inCombat == false) {
+					map.moveUp();
+					upDateEventZone();
+					updateCenterZone();
+				}
 			}
 		});
 		goBotButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// if we are not in event
-				map.moveDown();
-				upDateEventZone();
-				updateCenterZone();
+				if(inCombat == false) {
+					map.moveDown();
+					upDateEventZone();
+					updateCenterZone();
+				}
 			}
 		});
 		goBotPanel.setBorder(BorderFactory.createEmptyBorder(25, 0, 0, 0));
@@ -160,34 +223,126 @@ public class Game extends JPanel{
 
 	private void eventZone() {
 		rightZone = new JPanel();
+		rightZone.setPreferredSize(new Dimension(200, 500));
 		rightZone.setLayout(new BoxLayout(rightZone, BoxLayout.Y_AXIS));
-		mapEvent();
+		if (inCombat == false) {
+			mapEvent();
+		}
+		else if (inCombat == true) {
+			combatEvent();
+		}
 		rightZone.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
 		add(rightZone, BorderLayout.EAST);
 	}
 
+	private void	combatRound() throws DeathException {
+		int heroSpeed = hero.getWeapon().getSpeedValue();
+		int mobSpeed = ennemy.getWeapon().getSpeedValue();
+		boolean specialButton = false;
+		if (hero.getSpecialType().contains("activ")) {
+			specialButton = useSpecialButton.isSelected();
+		}
+
+		if (flee == true) {
+			Random rand = new Random();
+			int randomInt = rand.nextInt(100);
+			if (randomInt <= hero.getFleeChances()) {
+				inCombat = false;
+				mapEvent();
+				return ;
+			}
+			else {
+				heroSpeed = 0;
+			}
+		}
+		try {
+			if (heroSpeed >= mobSpeed && heroSpeed > 0) {
+				hero.dealDamages(ennemy, specialButton);
+			}
+			else if (mobSpeed > heroSpeed) {
+				ennemy.dealDamages(hero);
+			}
+			if (heroSpeed < mobSpeed && heroSpeed > 0) {
+				hero.dealDamages(ennemy, specialButton);
+			}
+			else if (mobSpeed <= heroSpeed) {
+				ennemy.dealDamages(hero);
+			}
+			if (flee == false) {
+				hero.chargeUp();
+			}
+		} catch (VictoryException e) {
+			inCombat = false;
+			victory = true;
+			lootMob();
+			if (boss){
+				//victory screen / next level ou leave serait mieux
+				parent.mainMenu();
+			}
+		}
+	}
+	
+	private void lootMob() {
+		hero.gainExperience(ennemy.getExperienceDroped());
+		//afficher les items loot avec un random rand pour voir si on les loot puis pop-up avec choix d'equiper ou pas
+	}
+
+	private void	combatEvent() {
+		JLabel name = new JLabel(ennemy.getName());
+		rightZone.add(name);
+		JLabel type = new JLabel(ennemy.getTypeName() + "/ lvl. " + ennemy.getLevel());
+		rightZone.add(type);
+		JLabel hp = new JLabel("Hp : " + ennemy.getHp() + " / " + ennemy.getMaxHp());
+		rightZone.add(hp);
+		JLabel stats = new JLabel("Attack = " + ennemy.getAttackValue() + " | " + "Armor = " + ennemy.getArmorValue() );
+		rightZone.add(stats);
+		JLabel speed = new JLabel("Attack speed = " + ennemy.getWeapon().getSpeedValue());
+		rightZone.add(speed);
+	}
+
 	private void mapEvent() {
-		char event = map.upDatePos();
-		boolean flee = false;
+		char event = map.getMap().get(map.getPosX()).charAt(map.getPosY());
 		int xAdvancement = map.getPosX() - (map.getSize() / 2); 
 		int yAdvancement = map.getPosY() - (map.getSize() / 2);
 		int advancement = (xAdvancement < 0 ? xAdvancement * -1: xAdvancement) + (yAdvancement < 0 ? yAdvancement * -1: yAdvancement);
-		if (event == 'M') {
-			Mob ennemy = MobSpawner.createRandom(event, advancement, map.getMapLevel());
-			//combatEvent();
+		if (victory == false && flee == false) {
+			if (event == 'M') {
+				ennemy = MobSpawner.createRandom(event, advancement, map.getMapLevel());
+				inCombat = true;
+				combatEvent();
+
+			}
+			else if (event == 'B') {
+				ennemy = MobSpawner.create("worldBoss", map.getMapLevel());
+				inCombat = true;
+				boss = true;
+				combatEvent();
+			}
+			else if (event == '?') {
+				new MysteryCaseDialog((JFrame) SwingUtilities.getWindowAncestor(Game.this), this);
+			}
 		}
-		else if (event == 'B') {
-			Mob ennemy = MobSpawner.create("worldBoss", map.getMapLevel());
-			//combatEvent();
-		}
-		else if (event == '?') {
-			//mysteryEvent();
-		}
-		if (flee == false) {
+		if (flee == false && (inCombat == false || victory == true)) {
+			victory = false;
 			String left = map.getMap().get(map.getPosX()).substring(0, map.getPosY());
 			String right = map.getMap().get(map.getPosX()).substring(map.getPosY() + 1);
 			map.getMap().set(map.getPosX(), left + "." + right);
+			updatePlayerZone();
 			map.upDateExploredMap();
+		}
+		else if (flee == true) {
+			flee = false;
+			int prevposX = map.getPosX();
+			int prevPosY = map.getPosY();
+			map.setPosX(map.getPrevPosX());
+			map.setPosY(map.getPrevPosY());
+			map.setPrevPosX(prevposX);
+			map.setPrevPosY(prevPosY);
+			map.upDateExploredMap();
+		}
+		if (victory && boss){
+			//save hero in database
+			parent.mainMenu();
 		}
 	}
 
@@ -196,7 +351,7 @@ public class Game extends JPanel{
 		specialZone.setLayout(new BorderLayout());
 		specialZone.add(Box.createRigidArea(new Dimension(0, 20)));
 		if (hero.getSpecialType().equals("activ")) {
-			activTypeSpecial(specialZone); // listener a ajouté quand combat fait
+			activTypeSpecial(specialZone);
 		}
 		else if (hero.getSpecialType().equals("passiv")) {
 			passivTypeSpecial(specialZone);
@@ -209,11 +364,11 @@ public class Game extends JPanel{
 		JLabel chargeCounter = new JLabel ("Charges : " + this.hero.getCurrentCharge() + " / " + this.hero.getSpecialChargeCounter());
 		specialZone.add(chargeCounter, BorderLayout.NORTH);
 		if (hero.isSpecialUp()) {
-			JCheckBox useSpecialButton = new JCheckBox("Use special");
+			useSpecialButton = new JCheckBox("Use special");
 			specialZone.add(useSpecialButton, BorderLayout.CENTER);
 		}
 		else {
-			JCheckBox useSpecialButton = new JCheckBox("Use special");
+			useSpecialButton = new JCheckBox("Use special");
 			useSpecialButton.setEnabled(false);
 			specialZone.add(useSpecialButton, BorderLayout.CENTER);
 		}
@@ -251,7 +406,7 @@ public class Game extends JPanel{
 					mapCase.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
 					centerZone.add(mapCase);
 				}
-				else if (trackerCase(i, j)) {
+				else if (trackerCase(i, j) && map.getExploredMap().get(i).charAt(j) == ' ') {
 					JLabel mapCase = new JLabel("" + map.getMap().get(i).charAt(j));
 					mapCase.setHorizontalAlignment(SwingConstants.CENTER);
 					mapCase.setVerticalAlignment(SwingConstants.CENTER);
@@ -289,6 +444,62 @@ public class Game extends JPanel{
 			return (true);
 		}
 		return (false);
+	}
+
+	//getters et setters
+	public Hero getHero() {
+		return (this.hero);
+	}
+
+	@Override
+	public void keyPressed(KeyEvent e) {
+        int keyCode = e.getKeyCode();
+        if (keyCode == KeyEvent.VK_UP) {
+			if(inCombat == false) {
+				map.moveUp();
+				upDateEventZone();
+				updateCenterZone();
+			}
+        } else if (keyCode == KeyEvent.VK_DOWN) {
+			if(inCombat == false) {
+				map.moveDown();
+				upDateEventZone();
+				updateCenterZone();
+			}
+        } else if (keyCode == KeyEvent.VK_LEFT) {
+			if(inCombat == false) {
+				map.moveLeft();
+				upDateEventZone();
+				updateCenterZone();
+			}
+        } else if (keyCode == KeyEvent.VK_RIGHT) {
+			if(inCombat == false) {
+				map.moveRight();
+				upDateEventZone();
+				updateCenterZone();
+			}
+        } else if (keyCode == KeyEvent.VK_SPACE) {
+			if(inCombat == true) {
+				try {
+					combatRound();
+					upDateEventZone();
+					updatePlayerZone();
+					if(inCombat == false) {
+						updateCenterZone();
+					}
+				} catch (DeathException ex) {
+					parent.mainMenu();
+				}
+			}
+        }
+	}
+
+	@Override
+	public void keyReleased(KeyEvent arg0) {
+	}
+
+	@Override
+	public void keyTyped(KeyEvent arg0) {
 	}
 
 }

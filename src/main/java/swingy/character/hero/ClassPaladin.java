@@ -11,6 +11,7 @@ public class ClassPaladin extends Hero {
 	}
 	public ClassPaladin(String name) {
 		super(name);
+		this.attackValue = 15;
 		this.typeName = "Paladin";
 		this.specialAttack = "quick heal";
 		this.specialType = "activ";

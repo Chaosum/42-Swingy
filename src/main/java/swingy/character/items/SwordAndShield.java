@@ -11,7 +11,7 @@ public class SwordAndShield extends Weapon {
 		this.rank = "Basic";
 		this.levelRequired = 1;
 		this.speedValue = 3;
-		this.attackModifier = 5;
+		this.attackModifier = 8;
 		this.armorModifier = 10;
 		this.specialEffects.add("Block");
 	}

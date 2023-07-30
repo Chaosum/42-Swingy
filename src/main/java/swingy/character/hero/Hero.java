@@ -81,12 +81,8 @@ public class Hero extends Characters {
 		//display level up
 	}
 
-	public void chargeUp() throws SpecialIsReadyException {
+	public void chargeUp() {
 		this.setCurrentCharge(this.currentCharge + 1);
-		if (this.getCurrentCharge() == this.specialChargeCounter) {
-			//activer l'option special
-			throw new SpecialIsReadyException();
-		}
 	}
 	public int special() {
 		return (0);
@@ -149,13 +145,13 @@ public class Hero extends Characters {
 		}
 	}
 
-	public void dealDamages(Mob to, boolean special) {
+	public void dealDamages(Mob to, boolean special) throws VictoryException {
 		int damages = this.attackValue + this.weapon.getAttackModifier();
 		Random rand = new Random(); // definit si crit
 		if (rand.nextInt(10) < this.critChance) {
 			damages = damages * this.critModifier;
 		}
-		if (this.specialType == "attack" && special == true) {
+		if (this.specialType.contains("activ") && special == true) {
 			damages += this.special();
 		}
 		if (this.weapon.getSpecialEffects().contains("passiv")) {
@@ -176,8 +172,10 @@ public class Hero extends Characters {
 		try {
 			to.takeDamages(damages, this.weapon, this);
 		} catch (DeathException e) {
-			this.hp = this.maxHp / 2 + this.hpBonus;
-			//mob killed - Victory
+			this.hp = this.maxHp / 2 + this.hp;
+			if (this.hp > this.maxHp)
+				this.hp = this.maxHp;
+			throw new VictoryException(e.getMessage());
 		}
 	}
 
