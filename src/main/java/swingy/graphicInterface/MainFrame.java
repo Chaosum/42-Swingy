@@ -59,7 +59,7 @@ public class MainFrame extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (heroSelection.getHeroList().getSelectedValue() != null) {
-					enterTheDungeon();
+					enterTheDungeon(displayHeroStats.getHero());
 				}
 			}
 		});
@@ -69,11 +69,10 @@ public class MainFrame extends JFrame {
 		repaint();
 	}
 	
-	private void enterTheDungeon(){
-		Hero hero = this.displayHeroStats.getHero();
+	public void enterTheDungeon(Hero hero){
 		Map map = new Map(hero);
 		windowsPane.removeAll();
-		game = new Game(map, displayHeroStats, this);
+		game = new Game(map, this);
 		windowsPane.add(game, BorderLayout.CENTER);
 		validate();
 		repaint();

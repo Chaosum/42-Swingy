@@ -172,9 +172,6 @@ public class Hero extends Characters {
 		try {
 			to.takeDamages(damages, this.weapon, this);
 		} catch (DeathException e) {
-			this.hp = this.maxHp / 2 + this.hp;
-			if (this.hp > this.maxHp)
-				this.hp = this.maxHp;
 			throw new VictoryException(e.getMessage());
 		}
 	}

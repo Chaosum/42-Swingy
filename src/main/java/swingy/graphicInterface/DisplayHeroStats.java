@@ -45,7 +45,7 @@ public class DisplayHeroStats extends JScrollPane{
 		repaint();
 	}
 
-	public JScrollPane setUpHeroStats(int fontSize) { // personnalisé l'UI
+	private JScrollPane setUpHeroStats(int fontSize) { // personnalisé l'UI
 		JPanel stats = new JPanel();
 		stats.setLayout(new BoxLayout(stats, BoxLayout.Y_AXIS));
 		Border border = BorderFactory.createLineBorder(Color.BLACK, 2); // Bordure de couleur noire, épaisseur de 2 pixels

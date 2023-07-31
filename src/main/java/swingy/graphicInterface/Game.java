@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -19,6 +20,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
@@ -32,7 +34,6 @@ import swingy.map.Map;
 public class Game extends JPanel implements KeyListener{
 	private Hero	hero;
 	private Map		map;
-	private DisplayHeroStats displayHeroStats;
 	private JPanel	leftZone;
 	private JPanel	centerZone;
 	private JPanel	rightZone;
@@ -43,12 +44,13 @@ public class Game extends JPanel implements KeyListener{
 	private Mob		ennemy;
 	private JCheckBox useSpecialButton;
 	private MainFrame parent;
+	private Game current;
 
-	public Game(Map map, DisplayHeroStats displayHeroStats, MainFrame parent) {
+	public Game(Map map, MainFrame parent) {
+		current = this;
 		this.parent = parent;
 		this.map = map;
 		this.hero = map.getHero();
-		this.displayHeroStats = displayHeroStats;
 		this.inCombat = false;
 		this.victory = false;
 		this.boss = false;
@@ -64,11 +66,11 @@ public class Game extends JPanel implements KeyListener{
 		add(rightZone, BorderLayout.EAST);
 		addKeyListener(this);
 		setFocusable(true);
-		setFocusTraversalKeysEnabled(false);
 	}
 
 	private void upDateEventZone() {
 		remove(rightZone);
+		rightZone.removeAll();
 		eventZone();
 		add(rightZone, BorderLayout.EAST);
 		validate();
@@ -78,6 +80,7 @@ public class Game extends JPanel implements KeyListener{
 
 	private void updateCenterZone() {
 		remove(centerZone);
+		centerZone.removeAll();
 		mapZone();
 		add(centerZone, BorderLayout.CENTER);
 		validate();
@@ -86,6 +89,7 @@ public class Game extends JPanel implements KeyListener{
 
 	private void updatePlayerZone() {
 		remove(leftZone);
+		leftZone.removeAll();
 		playerZone();
 		add(leftZone, BorderLayout.WEST);
 		validate();
@@ -95,11 +99,49 @@ public class Game extends JPanel implements KeyListener{
 	private void playerZone() {
 		leftZone = new JPanel();
 		leftZone.setLayout(new BoxLayout(leftZone, BoxLayout.Y_AXIS));
-		leftZone.add(displayHeroStats.setUpHeroStats(14)); // Crée custom
+		//leftZone.add(heroStatsZone());
 		leftZone.add(actionSection());
 		leftZone.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
 	}
 
+	private JScrollPane heroStatsZone() {
+		JPanel stats = new JPanel();
+		stats.setLayout(new BoxLayout(stats, BoxLayout.Y_AXIS));
+		stats.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
+		
+		JLabel name = new JLabel(hero.getName() + " " + hero.getTitle());
+		name.setFont(new Font("Arial", Font.BOLD, 20));
+		JLabel heroLvl = new JLabel( hero.getTypeName() + " lvl. " + hero.getLevel());
+		JLabel exeperience = new JLabel("xp : " + hero.getExperience() + " / " + hero.getNextLevelXp() + hero.getExperience() + " | needed: " + hero.getNextLevelXp());
+		JLabel heroHp = new JLabel( "Hp : " + hero.getHp() + " / " + hero.getMaxHp());
+		JLabel special = new JLabel("Spacial : " + hero.getSpecialDescription());
+		JLabel heroStats = new JLabel("Attack : " + hero.getAttackValue() + " " + hero.getTitle() + "Armor : " + hero.getArmorValue());
+		JLabel spacer = new JLabel(" ");
+		JLabel heroWeapon = new JLabel("Weapon : " + hero.getWeapon().getName());
+		JLabel heroWeaponStats = new JLabel("attack : " + hero.getWeapon().getAttackModifier() + " | Armor : " + hero.getWeapon().getArmorModifier() + " | Hp :" + hero.getWeapon().getHpModifier());
+		JLabel heroArmor = new JLabel("Armor : " + hero.getArmor().getName());
+		JLabel heroArmorStats = new JLabel("attack : " + hero.getArmor().getAttackModifier() + " | Armor : " + hero.getArmor().getArmorModifier() + " | Hp :" + hero.getArmor().getHpModifier());
+		JLabel heroHelmet = new JLabel("Helmet : " + hero.getHelmet().getName());
+		JLabel heroHelmetStats = new JLabel("attack : " + hero.getHelmet().getAttackModifier() + " | Armor : " + hero.getHelmet().getArmorModifier() + " | Hp :" + hero.getHelmet().getHpModifier());
+		
+		stats.add(name);
+		stats.add(heroLvl);
+		stats.add(exeperience);
+		stats.add(heroHp);
+		stats.add(special);
+		stats.add(heroStats);
+		stats.add(spacer);
+		stats.add(heroWeapon);
+		stats.add(heroWeaponStats);
+		stats.add(heroArmor);
+		stats.add(heroArmorStats);
+		stats.add(heroHelmet);
+		stats.add(heroHelmetStats);
+
+		JScrollPane scrollPane = new JScrollPane(stats);
+		return (scrollPane);
+	}
+	
 	private JPanel actionSection() {
 		JPanel panel = new JPanel();
 		panel.setLayout(new GridLayout(2, 2));
@@ -116,7 +158,8 @@ public class Game extends JPanel implements KeyListener{
 							updateCenterZone();
 						}
 					} catch (DeathException ex) {
-						parent.mainMenu();
+						victory = false;
+						new EndOfTheGame((JFrame) SwingUtilities.getWindowAncestor(Game.this), current, victory);
 					}
 				}
 			}
@@ -137,7 +180,8 @@ public class Game extends JPanel implements KeyListener{
 							updateCenterZone();
 						}
 					} catch (DeathException ex) {
-						parent.mainMenu();
+						victory = false;
+						new EndOfTheGame((JFrame) SwingUtilities.getWindowAncestor(Game.this), current, victory);
 					}
 				}
 			}
@@ -275,15 +319,15 @@ public class Game extends JPanel implements KeyListener{
 			inCombat = false;
 			victory = true;
 			lootMob();
-			if (boss){
-				//victory screen / next level ou leave serait mieux
-				parent.mainMenu();
+			if (boss) {
+				new EndOfTheGame((JFrame) SwingUtilities.getWindowAncestor(Game.this), this, victory);
 			}
 		}
 	}
 	
 	private void lootMob() {
 		hero.gainExperience(ennemy.getExperienceDroped());
+		LootBoxChoice lootbox = new LootBoxChoice((JFrame) SwingUtilities.getWindowAncestor(Game.this), this);
 		//afficher les items loot avec un random rand pour voir si on les loot puis pop-up avec choix d'equiper ou pas
 	}
 
@@ -327,7 +371,6 @@ public class Game extends JPanel implements KeyListener{
 			String left = map.getMap().get(map.getPosX()).substring(0, map.getPosY());
 			String right = map.getMap().get(map.getPosX()).substring(map.getPosY() + 1);
 			map.getMap().set(map.getPosX(), left + "." + right);
-			updatePlayerZone();
 			map.upDateExploredMap();
 		}
 		else if (flee == true) {
@@ -341,8 +384,7 @@ public class Game extends JPanel implements KeyListener{
 			map.upDateExploredMap();
 		}
 		if (victory && boss){
-			//save hero in database
-			parent.mainMenu();
+			new EndOfTheGame((JFrame) SwingUtilities.getWindowAncestor(Game.this), this, victory);
 		}
 	}
 
@@ -446,39 +488,35 @@ public class Game extends JPanel implements KeyListener{
 		return (false);
 	}
 
-	//getters et setters
-	public Hero getHero() {
-		return (this.hero);
-	}
-
+	
 	@Override
 	public void keyPressed(KeyEvent e) {
-        int keyCode = e.getKeyCode();
-        if (keyCode == KeyEvent.VK_UP) {
+		int keyCode = e.getKeyCode();
+		if (keyCode == KeyEvent.VK_UP) {
 			if(inCombat == false) {
 				map.moveUp();
 				upDateEventZone();
 				updateCenterZone();
 			}
-        } else if (keyCode == KeyEvent.VK_DOWN) {
+		} else if (keyCode == KeyEvent.VK_DOWN) {
 			if(inCombat == false) {
 				map.moveDown();
 				upDateEventZone();
 				updateCenterZone();
 			}
-        } else if (keyCode == KeyEvent.VK_LEFT) {
+		} else if (keyCode == KeyEvent.VK_LEFT) {
 			if(inCombat == false) {
 				map.moveLeft();
 				upDateEventZone();
 				updateCenterZone();
 			}
-        } else if (keyCode == KeyEvent.VK_RIGHT) {
+		} else if (keyCode == KeyEvent.VK_RIGHT) {
 			if(inCombat == false) {
 				map.moveRight();
 				upDateEventZone();
 				updateCenterZone();
 			}
-        } else if (keyCode == KeyEvent.VK_SPACE) {
+		} else if (keyCode == KeyEvent.VK_SPACE) {
 			if(inCombat == true) {
 				try {
 					combatRound();
@@ -488,18 +526,28 @@ public class Game extends JPanel implements KeyListener{
 						updateCenterZone();
 					}
 				} catch (DeathException ex) {
-					parent.mainMenu();
+					new EndOfTheGame((JFrame) SwingUtilities.getWindowAncestor(Game.this), this, victory);
 				}
 			}
-        }
+		}
 	}
-
+	
 	@Override
 	public void keyReleased(KeyEvent arg0) {
 	}
-
+	
 	@Override
 	public void keyTyped(KeyEvent arg0) {
 	}
-
+	
+	//getters et setters
+	public Hero getHero() {
+		return (this.hero);
+	}
+	public Mob getEnnemy() {
+		return (this.ennemy);
+	}
+	public MainFrame getParent() {
+		return (this.parent);
+	}
 }
