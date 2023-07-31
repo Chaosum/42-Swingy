@@ -74,7 +74,7 @@ public class MainFrame extends JFrame {
 		windowsPane.removeAll();
 		game = new Game(map, this);
 		windowsPane.add(game, BorderLayout.CENTER);
-		validate();
+		revalidate();
 		repaint();
 	}
 

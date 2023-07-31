@@ -37,18 +37,18 @@ public class Game extends JPanel implements KeyListener{
 	private JPanel	leftZone;
 	private JPanel	centerZone;
 	private JPanel	rightZone;
+	private JCheckBox useSpecialButton;
 	private boolean	inCombat;
 	private boolean flee;
 	private boolean	victory;
 	private boolean	boss;
 	private Mob		ennemy;
-	private JCheckBox useSpecialButton;
-	private MainFrame parent;
+	private MainFrame mainFrame;
 	private Game current;
 
 	public Game(Map map, MainFrame parent) {
-		current = this;
-		this.parent = parent;
+		this.current = this;
+		this.mainFrame = parent;
 		this.map = map;
 		this.hero = map.getHero();
 		this.inCombat = false;
@@ -58,22 +58,22 @@ public class Game extends JPanel implements KeyListener{
 
 		setLayout(new BorderLayout());
 		requestFocusInWindow();
+		addKeyListener(this);
+		setFocusable(true);
+		setFocusTraversalKeysEnabled(false);
 		playerZone();
 		mapZone();
 		eventZone();
 		add(leftZone, BorderLayout.WEST);
 		add(centerZone, BorderLayout.CENTER);
 		add(rightZone, BorderLayout.EAST);
-		addKeyListener(this);
-		setFocusable(true);
-		setFocusTraversalKeysEnabled(false);
 	}
 
 	private void upDateEventZone() {
 		remove(rightZone);
 		eventZone();
 		add(rightZone, BorderLayout.EAST);
-		validate();
+		revalidate();
 		repaint();
 	}
 
@@ -82,7 +82,7 @@ public class Game extends JPanel implements KeyListener{
 		remove(centerZone);
 		mapZone();
 		add(centerZone, BorderLayout.CENTER);
-		validate();
+		revalidate();
 		repaint();
 	}
 
@@ -90,7 +90,7 @@ public class Game extends JPanel implements KeyListener{
 		remove(leftZone);
 		playerZone();
 		add(leftZone, BorderLayout.WEST);
-		validate();
+		revalidate();
 		repaint();
 	}
 
@@ -157,7 +157,7 @@ public class Game extends JPanel implements KeyListener{
 						}
 					} catch (DeathException ex) {
 						victory = false;
-						new EndOfTheGame((JFrame) SwingUtilities.getWindowAncestor(Game.this), current, victory);
+						new EndOfTheGame((JFrame) SwingUtilities.getWindowAncestor(Game.this), mainFrame, current, victory);
 					}
 				}
 			}
@@ -179,7 +179,7 @@ public class Game extends JPanel implements KeyListener{
 						}
 					} catch (DeathException ex) {
 						victory = false;
-						new EndOfTheGame((JFrame) SwingUtilities.getWindowAncestor(Game.this), current, victory);
+						new EndOfTheGame((JFrame) SwingUtilities.getWindowAncestor(Game.this), mainFrame, current, victory);
 					}
 				}
 			}
@@ -203,12 +203,13 @@ public class Game extends JPanel implements KeyListener{
 		});
 		goLeftPanel.add(goLeftButton);
 		goLeftPanel.setBorder(BorderFactory.createEmptyBorder(50, 0, 0, 0));
-
+		
 		JPanel goRightPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
 		JButton goRightButton = new JButton("→");
 		goRightButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				System.out.println("coucou");
 				if(inCombat == false) {
 					map.moveRight();
 					upDateEventZone();
@@ -254,8 +255,6 @@ public class Game extends JPanel implements KeyListener{
 		direction.add(goLeftPanel, BorderLayout.WEST);
 		direction.add(goRightPanel, BorderLayout.EAST);
 		direction.add(goBotPanel, BorderLayout.CENTER);
-
-		direction.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
 		panel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
 		panel.add(direction);
 
@@ -265,7 +264,6 @@ public class Game extends JPanel implements KeyListener{
 
 	private void eventZone() {
 		rightZone = new JPanel();
-		rightZone.setPreferredSize(new Dimension(200, 500));
 		rightZone.setLayout(new BoxLayout(rightZone, BoxLayout.Y_AXIS));
 		if (inCombat == false) {
 			mapEvent();
@@ -318,14 +316,14 @@ public class Game extends JPanel implements KeyListener{
 			victory = true;
 			lootMob();
 			if (boss) {
-				new EndOfTheGame((JFrame) SwingUtilities.getWindowAncestor(Game.this), this, victory);
+				new EndOfTheGame((JFrame) SwingUtilities.getWindowAncestor(Game.this), mainFrame, current, victory);
 			}
 		}
 	}
 	
 	private void lootMob() {
 		hero.gainExperience(ennemy.getExperienceDroped());
-		LootBoxChoice lootbox = new LootBoxChoice((JFrame) SwingUtilities.getWindowAncestor(Game.this), this);
+		new LootBoxChoice((JFrame) SwingUtilities.getWindowAncestor(Game.this), this);
 		//afficher les items loot avec un random rand pour voir si on les loot puis pop-up avec choix d'equiper ou pas
 	}
 
@@ -382,7 +380,7 @@ public class Game extends JPanel implements KeyListener{
 			map.upDateExploredMap();
 		}
 		if (victory && boss){
-			new EndOfTheGame((JFrame) SwingUtilities.getWindowAncestor(Game.this), this, victory);
+			new EndOfTheGame((JFrame) SwingUtilities.getWindowAncestor(Game.this), mainFrame, this, victory);
 		}
 	}
 
@@ -524,7 +522,7 @@ public class Game extends JPanel implements KeyListener{
 						updateCenterZone();
 					}
 				} catch (DeathException ex) {
-					new EndOfTheGame((JFrame) SwingUtilities.getWindowAncestor(Game.this), this, victory);
+					new EndOfTheGame((JFrame) SwingUtilities.getWindowAncestor(Game.this), mainFrame, current, victory);
 				}
 			}
 		}
@@ -544,8 +542,5 @@ public class Game extends JPanel implements KeyListener{
 	}
 	public Mob getEnnemy() {
 		return (this.ennemy);
-	}
-	public MainFrame getParent() {
-		return (this.parent);
 	}
 }

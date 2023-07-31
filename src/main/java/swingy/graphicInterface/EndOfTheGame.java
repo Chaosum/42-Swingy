@@ -14,10 +14,13 @@ import javax.swing.JPanel;
 import swingy.character.hero.Hero;
 
 public class EndOfTheGame extends JDialog {
+	MainFrame parentParent;
 	Game parent;
+
 	Hero hero;
 
-	public EndOfTheGame (JFrame parentFrame, Game parent, boolean victory) {
+	public EndOfTheGame (JFrame parentFrame, MainFrame parentParent, Game parent, boolean victory) {
+		this.parentParent = parentParent;
 		this.parent = parent;
 		this.hero = parent.getHero();
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -45,7 +48,7 @@ public class EndOfTheGame extends JDialog {
 			public void actionPerformed(ActionEvent e) {
 				saveHero();
 				dispose();
-				parent.getParent().enterTheDungeon(hero);
+				parentParent.enterTheDungeon(hero);
 			}
 		});
 		JButton mainMenuButton = new JButton("Main menu");
@@ -54,7 +57,7 @@ public class EndOfTheGame extends JDialog {
 			public void actionPerformed(ActionEvent e) {
 				saveHero();
 				dispose();
-				parent.getParent().mainMenu();
+				parentParent.mainMenu();
 			}
 		});
 		winScreen.add(youWinLabel);
@@ -78,7 +81,7 @@ public class EndOfTheGame extends JDialog {
 			public void actionPerformed(ActionEvent e) {
 				saveHero();
 				dispose();
-				parent.getParent().enterTheDungeon(hero);
+				parentParent.enterTheDungeon(hero);
 			}
 		});
 		JButton mainMenuButton = new JButton("Main menu");
@@ -86,7 +89,7 @@ public class EndOfTheGame extends JDialog {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				dispose();
-				parent.getParent().mainMenu();
+				parentParent.mainMenu();
 			}
 		});
 		winScreen.add(youLoseLabel);

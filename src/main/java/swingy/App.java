@@ -49,10 +49,10 @@ public class App {
 		}
 	}
 
-	public static void startGame() throws Exception {
-		MainFrame window = new MainFrame();
-		window.setVisible(true);
-	}
+	//public static void startGame() throws Exception {
+		//	MainFrame window = new MainFrame();
+		//	window.setVisible(true);
+	//}
 
 	public static void main(String[] args) {
 		try {
@@ -61,7 +61,8 @@ public class App {
 			System.out.println("Erreur lors de la création de la base de données : " + e.getMessage());
 		}
 		try {
-			startGame();
+			MainFrame window = new MainFrame();
+			window.setVisible(true);
 		} catch (Exception e) {
 			MainFrame.closeEntityManagerFactory();
 			System.out.println(e.getMessage());
