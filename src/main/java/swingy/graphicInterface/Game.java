@@ -66,11 +66,11 @@ public class Game extends JPanel implements KeyListener{
 		add(rightZone, BorderLayout.EAST);
 		addKeyListener(this);
 		setFocusable(true);
+		setFocusTraversalKeysEnabled(false);
 	}
 
 	private void upDateEventZone() {
 		remove(rightZone);
-		rightZone.removeAll();
 		eventZone();
 		add(rightZone, BorderLayout.EAST);
 		validate();
@@ -80,7 +80,6 @@ public class Game extends JPanel implements KeyListener{
 
 	private void updateCenterZone() {
 		remove(centerZone);
-		centerZone.removeAll();
 		mapZone();
 		add(centerZone, BorderLayout.CENTER);
 		validate();
@@ -89,7 +88,6 @@ public class Game extends JPanel implements KeyListener{
 
 	private void updatePlayerZone() {
 		remove(leftZone);
-		leftZone.removeAll();
 		playerZone();
 		add(leftZone, BorderLayout.WEST);
 		validate();
@@ -99,7 +97,7 @@ public class Game extends JPanel implements KeyListener{
 	private void playerZone() {
 		leftZone = new JPanel();
 		leftZone.setLayout(new BoxLayout(leftZone, BoxLayout.Y_AXIS));
-		//leftZone.add(heroStatsZone());
+		leftZone.add(heroStatsZone());
 		leftZone.add(actionSection());
 		leftZone.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
 	}
