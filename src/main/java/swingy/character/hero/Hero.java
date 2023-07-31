@@ -148,7 +148,7 @@ public class Hero extends Characters {
 	public void dealDamages(Mob to, boolean special) throws VictoryException {
 		int damages = this.attackValue + this.weapon.getAttackModifier();
 		Random rand = new Random(); // definit si crit
-		if (rand.nextInt(10) < this.critChance) {
+		if (rand.nextInt(100) < this.critChance) {
 			damages = damages * this.critModifier;
 		}
 		if (this.specialType.contains("activ") && special == true) {

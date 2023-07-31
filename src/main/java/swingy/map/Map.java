@@ -56,7 +56,6 @@ public class Map {
 		String left = this.map.get(size / 2).substring(0, size / 2);
 		String right = this.map.get(size / 2).substring((size / 2) + 1);
 		map.set(size / 2, left + "." + right);
-		System.out.println(map);
 		initExploredMap();
 	}
 
@@ -86,7 +85,6 @@ public class Map {
 			}
 			i++;
 		}
-		System.out.println(this.exploredMap);
 	}
 
 	public void upDateExploredMap() {

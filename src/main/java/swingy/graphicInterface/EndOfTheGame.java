@@ -28,13 +28,16 @@ public class EndOfTheGame extends JDialog {
 		setLocationRelativeTo(parentFrame);
 		setUndecorated(true);
 		setResizable(false);
+		setModal(true);
+		setVisible(true);
 		if (victory){
 			winCase();
 		}
 		else {
 			loseCase();
 		}
-		setVisible(true);
+		revalidate();
+		repaint();
 	}
 
 	private void 	winCase() {

@@ -209,7 +209,6 @@ public class Game extends JPanel implements KeyListener{
 		goRightButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				System.out.println("coucou");
 				if(inCombat == false) {
 					map.moveRight();
 					upDateEventZone();
@@ -299,13 +298,13 @@ public class Game extends JPanel implements KeyListener{
 			if (heroSpeed >= mobSpeed && heroSpeed > 0) {
 				hero.dealDamages(ennemy, specialButton);
 			}
-			else if (mobSpeed > heroSpeed) {
+			else {
 				ennemy.dealDamages(hero);
 			}
 			if (heroSpeed < mobSpeed && heroSpeed > 0) {
 				hero.dealDamages(ennemy, specialButton);
 			}
-			else if (mobSpeed <= heroSpeed) {
+			else {
 				ennemy.dealDamages(hero);
 			}
 			if (flee == false) {
@@ -316,7 +315,7 @@ public class Game extends JPanel implements KeyListener{
 			victory = true;
 			lootMob();
 			if (boss) {
-				new EndOfTheGame((JFrame) SwingUtilities.getWindowAncestor(Game.this), mainFrame, current, victory);
+				new EndOfTheGame((JFrame) SwingUtilities.getWindowAncestor(Game.this), mainFrame, this, victory);
 			}
 		}
 	}
@@ -360,6 +359,7 @@ public class Game extends JPanel implements KeyListener{
 			}
 			else if (event == '?') {
 				new MysteryCaseDialog((JFrame) SwingUtilities.getWindowAncestor(Game.this), this);
+				updatePlayerZone();
 			}
 		}
 		if (flee == false && (inCombat == false || victory == true)) {
