@@ -130,11 +130,4 @@ public class Map {
 		if (posX / size > 0)
 			posX--;
 	}
-	public char upDatePos() {
-		char event = map.get(posY).charAt(posX);
-		//String left = this.map.get(posX).substring(0, posY);
-		//String right = this.map.get(posX).substring(posY + 1);
-		//map.set(posY, left + "." + right);
-		return (event);
-	}
 }

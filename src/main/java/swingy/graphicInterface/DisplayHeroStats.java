@@ -70,7 +70,7 @@ public class DisplayHeroStats extends JScrollPane{
 		JLabel heroDefense = new JLabel("Defense : " + this.hero.getArmorValue());
 		heroDefense.setFont(new Font("Arial", Font.BOLD, fontSize));
 		stats.add(heroDefense);
-		JLabel heroHp = new JLabel("Hp: " + (this.hero.getHp() + this.hero.getHpBonus()) );
+		JLabel heroHp = new JLabel("Hp: " + (this.hero.getMaxHp() + this.hero.getHpBonus()) );
 		heroHp.setFont(new Font("Arial", Font.BOLD, fontSize));
 		stats.add(heroHp);
 		//hero items

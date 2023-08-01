@@ -29,15 +29,12 @@ public class EndOfTheGame extends JDialog {
 		setUndecorated(true);
 		setResizable(false);
 		setModal(true);
-		setVisible(true);
 		if (victory){
 			winCase();
 		}
 		else {
 			loseCase();
 		}
-		revalidate();
-		repaint();
 	}
 
 	private void 	winCase() {
@@ -82,7 +79,6 @@ public class EndOfTheGame extends JDialog {
 		retryButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				saveHero();
 				dispose();
 				parentParent.enterTheDungeon(hero);
 			}

@@ -21,7 +21,6 @@ public class Wand extends Weapon {
 	public void special(Hero hero){
 		Random rand = new Random();
 		if (rand.nextInt(10) < 1) {
-			//display succes message
 				hero.chargeUp();
 		}
 	}

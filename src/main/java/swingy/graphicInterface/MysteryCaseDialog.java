@@ -47,9 +47,9 @@ public class MysteryCaseDialog extends JDialog {
 		sleepButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				int hpgain = hero.getMaxHp() / 2;
-				if (hpgain + hero.getHp() > hero.getMaxHp()) {
-					hero.setHp(hero.getMaxHp());
+				int hpgain = (hero.getMaxHp() + hero.getHpBonus()) / 2;
+				if (hpgain + hero.getHp() > hero.getMaxHp() + hero.getHpBonus()) {
+					hero.setHp(hero.getMaxHp() + hero.getHpBonus());
 				}
 				else {
 					hero.setHp(hpgain + hero.getHp());

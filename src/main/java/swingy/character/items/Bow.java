@@ -10,7 +10,7 @@ public class Bow extends Weapon{
 		this.rank = "Basic";
 		this.levelRequired = 1;
 		this.speedValue = 1;
-		this.attackModifier = 15;
+		this.attackModifier = 30;
 		this.specialEffects.add("Perforant");
 	}
 }

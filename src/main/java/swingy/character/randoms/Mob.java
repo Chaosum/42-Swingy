@@ -1,23 +1,25 @@
 package swingy.character.randoms;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
 import swingy.character.Characters;
 import swingy.character.hero.DeathException;
 import swingy.character.hero.Hero;
+import swingy.character.items.Items;
 import swingy.character.items.Weapon;
 
 public class Mob extends Characters{
-	protected int hostilityLevel;
 	protected List<String> phrases;
 	protected Weapon weapon;
 	protected int experienceDroped;
+	protected HashMap<Integer, Items> lootTable;
 
 	protected Mob(String name) {
 		super(name);
-		this.hostilityLevel = 0;
+		this.lootTable = new HashMap<Integer, Items>();
 		this.phrases = new ArrayList<String>();
 		weapon = new Weapon();
 	}
@@ -71,6 +73,12 @@ public class Mob extends Characters{
 			damagesModifier += damages / 3;
 		}
 		damages += damagesModifier;
+		if (this.weapon.getSpecialEffects().contains("Lifesteal")) {
+			this.hp += damages / 2;
+			if (this.hp > this.maxHp){
+				this.hp = this.maxHp;
+			}
+		}
 		try {
 			to.takeDamages(damages, this.weapon, this);
 		} catch (DeathException e) {
@@ -81,9 +89,6 @@ public class Mob extends Characters{
 	
 	public int getExperienceDroped() {
 		return (this.experienceDroped);
-	}
-	public int getHostilityLevel() {
-		return (this.hostilityLevel);
 	}
 
 	public List<String> getPhrases() {

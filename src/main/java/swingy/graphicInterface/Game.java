@@ -111,7 +111,7 @@ public class Game extends JPanel implements KeyListener{
 		name.setFont(new Font("Arial", Font.BOLD, 20));
 		JLabel heroLvl = new JLabel( hero.getTypeName() + " lvl. " + hero.getLevel());
 		JLabel exeperience = new JLabel("xp : " + hero.getExperience() + " / " + hero.getNextLevelXp() + hero.getExperience() + " | needed: " + hero.getNextLevelXp());
-		JLabel heroHp = new JLabel( "Hp : " + hero.getHp() + " / " + hero.getMaxHp());
+		JLabel heroHp = new JLabel( "Hp : " + hero.getHp() + " / " + (hero.getMaxHp() + hero.getHpBonus()));
 		JLabel special = new JLabel("Spacial : " + hero.getSpecialDescription());
 		JLabel heroStats = new JLabel("Attack : " + hero.getAttackValue() + " " + hero.getTitle() + "Armor : " + hero.getArmorValue());
 		JLabel spacer = new JLabel(" ");
@@ -157,7 +157,8 @@ public class Game extends JPanel implements KeyListener{
 						}
 					} catch (DeathException ex) {
 						victory = false;
-						new EndOfTheGame((JFrame) SwingUtilities.getWindowAncestor(Game.this), mainFrame, current, victory);
+						EndOfTheGame loseScreen = new EndOfTheGame((JFrame) SwingUtilities.getWindowAncestor(Game.this), mainFrame, current, victory);
+						loseScreen.setVisible(true);
 					}
 				}
 			}
@@ -179,7 +180,8 @@ public class Game extends JPanel implements KeyListener{
 						}
 					} catch (DeathException ex) {
 						victory = false;
-						new EndOfTheGame((JFrame) SwingUtilities.getWindowAncestor(Game.this), mainFrame, current, victory);
+						EndOfTheGame loseScreen = new EndOfTheGame((JFrame) SwingUtilities.getWindowAncestor(Game.this), mainFrame, current, victory);
+						loseScreen.setVisible(true);
 					}
 				}
 			}
@@ -315,11 +317,12 @@ public class Game extends JPanel implements KeyListener{
 			victory = true;
 			lootMob();
 			if (boss) {
-				new EndOfTheGame((JFrame) SwingUtilities.getWindowAncestor(Game.this), mainFrame, this, victory);
+				EndOfTheGame winSceen = new EndOfTheGame((JFrame) SwingUtilities.getWindowAncestor(Game.this), mainFrame, this, victory);
+				winSceen.setVisible(true);
 			}
 		}
 	}
-	
+
 	private void lootMob() {
 		hero.gainExperience(ennemy.getExperienceDroped());
 		new LootBoxChoice((JFrame) SwingUtilities.getWindowAncestor(Game.this), this);
@@ -343,16 +346,20 @@ public class Game extends JPanel implements KeyListener{
 		char event = map.getMap().get(map.getPosX()).charAt(map.getPosY());
 		int xAdvancement = map.getPosX() - (map.getSize() / 2); 
 		int yAdvancement = map.getPosY() - (map.getSize() / 2);
-		int advancement = (xAdvancement < 0 ? xAdvancement * -1: xAdvancement) + (yAdvancement < 0 ? yAdvancement * -1: yAdvancement);
+		if (xAdvancement < 0)
+			xAdvancement = xAdvancement * -1;
+		if (yAdvancement < 0)
+			yAdvancement = yAdvancement * -1;
+		int advancement = xAdvancement >= yAdvancement? (xAdvancement * 100) / (map.getSize() / 2) : (yAdvancement * 100) / (map.getSize() / 2);
 		if (victory == false && flee == false) {
-			if (event == 'M') {
+			if (event == 'M' || event == 'V' || event == 'Z' || event == 'A'
+					|| event == 'O' || event == 'T') {
 				ennemy = MobSpawner.createRandom(event, advancement, map.getMapLevel());
 				inCombat = true;
 				combatEvent();
-
 			}
 			else if (event == 'B') {
-				ennemy = MobSpawner.create("worldBoss", map.getMapLevel());
+				ennemy = MobSpawner.create(event, advancement, map.getMapLevel());
 				inCombat = true;
 				boss = true;
 				combatEvent();
@@ -371,6 +378,9 @@ public class Game extends JPanel implements KeyListener{
 		}
 		else if (flee == true) {
 			flee = false;
+			String left = map.getMap().get(map.getPosX()).substring(0, map.getPosY());
+			String right = map.getMap().get(map.getPosX()).substring(map.getPosY() + 1);
+			map.getMap().set(map.getPosX(), left + ennemy.getName() + right);
 			int prevposX = map.getPosX();
 			int prevPosY = map.getPosY();
 			map.setPosX(map.getPrevPosX());
@@ -380,7 +390,8 @@ public class Game extends JPanel implements KeyListener{
 			map.upDateExploredMap();
 		}
 		if (victory && boss){
-			new EndOfTheGame((JFrame) SwingUtilities.getWindowAncestor(Game.this), mainFrame, this, victory);
+			EndOfTheGame winSceen = new EndOfTheGame((JFrame) SwingUtilities.getWindowAncestor(Game.this), mainFrame, this, victory);
+			winSceen.setVisible(true);
 		}
 	}
 

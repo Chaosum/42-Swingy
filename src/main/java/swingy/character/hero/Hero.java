@@ -74,11 +74,10 @@ public class Hero extends Characters {
 	public void levelUp() {
 		this.experience = this.experience - this.nextLevelXp;
 		this.level++;
-		this.hp += 5;
+		this.hp += 50;
 		this.level += 1;
-		this.attackValue += 1;
+		this.attackValue += 10;
 		setNextLevelXp();
-		//display level up
 	}
 
 	public void chargeUp() {
@@ -133,7 +132,7 @@ public class Hero extends Characters {
 		}
 		damages = checkResistances(damages, from);
 		if (!weapon.getSpecialEffects().contains("Perforant")) {
-			damages -= this.armorValue;
+			damages -= this.armorValue + this.attackValue + this.weapon.getArmorModifier() + this.helmet.getArmorModifier() + this.armor.getArmorModifier();
 		}
 		if (damages <= 0) {
 			//no dmg deal
@@ -146,7 +145,7 @@ public class Hero extends Characters {
 	}
 
 	public void dealDamages(Mob to, boolean special) throws VictoryException {
-		int damages = this.attackValue + this.weapon.getAttackModifier();
+		int damages = this.attackValue + this.weapon.getAttackModifier() + this.helmet.getAttackModifier() + this.armor.getAttackModifier();
 		Random rand = new Random(); // definit si crit
 		if (rand.nextInt(100) < this.critChance) {
 			damages = damages * this.critModifier;
@@ -169,6 +168,12 @@ public class Hero extends Characters {
 			damagesModifier += damages / 3;
 		}
 		damages += damagesModifier;
+		if (this.weapon.getSpecialEffects().contains("Lifesteal")) {
+			this.hp += damages / 2;
+			if (this.hp > this.maxHp + hpBonus){
+				this.hp = this.maxHp + hpBonus;
+			}
+		}
 		try {
 			to.takeDamages(damages, this.weapon, this);
 		} catch (DeathException e) {
