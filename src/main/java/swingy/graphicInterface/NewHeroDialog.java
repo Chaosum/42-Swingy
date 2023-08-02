@@ -43,6 +43,8 @@ public class NewHeroDialog extends JDialog {
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setSize(300, 200);
 		setLocationRelativeTo(parentFrame);
+		setResizable(false);
+		setModal(true);
 		errorLabel = new JLabel("");
 		this.parentPanel = parentPanel;
 		JPanel newHeroForm = formPanel();
@@ -95,15 +97,15 @@ public class NewHeroDialog extends JDialog {
 						if (paladin.isSelected()) {
 							System.out.println("Test creation classe");
 							Hero newHero = HeroCreator.create("paladin", heroName);
-							HeroCreator.saveHeroToDatabase(newHero);
+							HeroCreator.saveHeroToDatabase(newHero, false);
 						}
 						else if (mage.isSelected()) {
 							Hero newHero = HeroCreator.create("mage", heroName);
-							HeroCreator.saveHeroToDatabase(newHero);
+							HeroCreator.saveHeroToDatabase(newHero, false);
 						}
 						else if (archer.isSelected()) {
 							Hero newHero = HeroCreator.create("archer", heroName);
-							HeroCreator.saveHeroToDatabase(newHero);
+							HeroCreator.saveHeroToDatabase(newHero, false);
 						}
 						else {
 							throw new WrongClassException();
@@ -112,9 +114,11 @@ public class NewHeroDialog extends JDialog {
 						parentPanel.upDateHeroList();
 					} catch (WrongClassException error) {
 						errorLabel.setText("Wrong class");
+						revalidate();
 						repaint();
 					} catch (EntityExistsException error) {
 						errorLabel.setText("Name already taken");
+						revalidate();
 						repaint();
 					}
 				} else { // Les contraintes ne sont pas valides, traitez les violations
@@ -123,6 +127,7 @@ public class NewHeroDialog extends JDialog {
 						errorMessage.append(violation.getMessage()).append("\n");
 					}
 					errorLabel.setText("Wrong Name format [a-zA-Z][a-z]");
+					revalidate();
 					repaint();
 				}
 			}

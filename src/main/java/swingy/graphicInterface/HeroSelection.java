@@ -44,6 +44,29 @@ public class HeroSelection extends JPanel {
 		JButton newHero = setUpButton("New hero");//new button
 		add(newHero);
 		add(Box.createRigidArea(new Dimension(0, 10)));//spacer
+		JButton deleteHero = setUpDeleteButton();
+		add(deleteHero);
+		add(Box.createRigidArea(new Dimension(0, 10)));//spacer
+	}
+
+	private JButton setUpDeleteButton() {
+		JButton deleButton = new JButton("Delete Hero");
+		deleButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+		deleButton.setPreferredSize(new Dimension(100, 30));
+		deleButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (heroList.getSelectedValue() != null) {
+					confirmChoiceDialog();
+				}
+			}
+		});
+		return (deleButton);
+	}
+
+	public void	confirmChoiceDialog() {
+		ConfirmChoiseDialog choice = new ConfirmChoiseDialog((JFrame) SwingUtilities.getWindowAncestor(HeroSelection.this), this);
+		choice.setVisible(true);
 	}
 
 	private JButton setUpButton(String name) {
@@ -55,7 +78,7 @@ public class HeroSelection extends JPanel {
 		newHero.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				System.out.println("Bouton New hero cliqué !");
+				System.out.println("Champ creation!");
 				callNewHeroDialog();
 			}
 		});

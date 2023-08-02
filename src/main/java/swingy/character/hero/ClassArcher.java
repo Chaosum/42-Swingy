@@ -14,14 +14,17 @@ public class ClassArcher extends Hero {
 
 	public ClassArcher(String name) {
 		super(name);
+		this.maxHp = 250;
+		this.hp = 250 + hpBonus;
 		this.typeName = "Archer";
 		this.specialAttack = "tracker";
 		this.specialType = "passiv";
 		this.weapon = new Bow();
+		this.attackValue = 10;
 		this.fleeChances = 75;
 		this.critChance = 50;
 		this.critModifier = 4;
-		this.specialDescription = "Highter chance to run\nHighter crit chance\nHighter crit modifier\nCan see next case";
+		this.specialDescription = "Can see next case";
 	}
 
 	@Override

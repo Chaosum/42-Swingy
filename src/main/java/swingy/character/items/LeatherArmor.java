@@ -1,11 +1,15 @@
 package swingy.character.items;
 
+import javax.persistence.Entity;
+
+@Entity
 public class LeatherArmor extends Armor{
 
 	public LeatherArmor() {
+		super();
 		this.name = "LeatherArmor";
 		this.rank = "basic";
-		this.type = "LeatherArmor";
+		this.type = "Armor";
 		this.levelRequired = 1;
 		this.attackModifier = 0;
 		this.hpModifier = 0;
@@ -13,9 +17,10 @@ public class LeatherArmor extends Armor{
 	}
 
 	public LeatherArmor(String rarity) {
+		super();
 		this.name = "LeatherArmor";
 		this.rank = "basic";
-		this.type = "LeatherArmor";
+		this.type = "Armor";
 		this.levelRequired = 1;
 		this.attackModifier = 0;
 		this.hpModifier = 0;

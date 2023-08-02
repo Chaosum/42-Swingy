@@ -12,6 +12,8 @@ import lombok.EqualsAndHashCode;
 import swingy.character.Characters;
 import swingy.character.items.Armor;
 import swingy.character.items.Helmet;
+import swingy.character.items.Items;
+import swingy.character.items.ItemsFactory;
 import swingy.character.items.Weapon;
 import swingy.character.randoms.Mob;
 
@@ -63,19 +65,33 @@ public class Hero extends Characters {
 		setNextLevelXp();
 	}
 
+	public void equip(Items item) {
+		if (item.getType().contains("Weapon")) {
+			this.weapon = ItemsFactory.createWeapon(item.getName(), item.getRank());
+		}
+		else if (item.getType().contains("Helmet")) {
+			this.helmet = ItemsFactory.createHelmet(item.getName(), item.getRank());
+		}
+		else if (item.getType().contains("Armor")) {
+			this.armor = ItemsFactory.createArmor(item.getName(), item.getRank());
+		}
+		this.hpBonus = this.helmet.getHpModifier() + this.weapon.getHpModifier() + this.armor.getHpModifier();
+	}
+
 	public void gainExperience(int value) {
 		setExperience(this.experience += value);
-		while (this.experience >= this.nextLevelXp) {
+		setNextLevelXp();
+		while (this.nextLevelXp <= 0) {
 			levelUp();
 		}
 	}
 
 	//indiquer au joueur qu'il a ganger un level et faire les modifs en fonction (hp etc)
 	public void levelUp() {
-		this.experience = this.experience - this.nextLevelXp;
+		this.experience = this.experience - ((this.level * 1000) + ((level - 1) * (level - 1)) * 450);
 		this.level++;
+		this.maxHp += 50;
 		this.hp += 50;
-		this.level += 1;
 		this.attackValue += 10;
 		setNextLevelXp();
 	}

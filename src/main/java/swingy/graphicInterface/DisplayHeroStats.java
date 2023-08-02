@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 
+import javax.persistence.EntityManager;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
@@ -33,8 +34,13 @@ public class DisplayHeroStats extends JScrollPane{
 	public void upDateHeroListStat(String selectedValue) {
 		String selectedName = selectedValue;
 		if (selectedName != null) {
+			EntityManager entityManager = MainFrame.entityManager;
 			String heroName = selectedName.substring(0, selectedName.indexOf(' '));
-			hero = MainFrame.entityManager.createQuery("SELECT h FROM Hero h WHERE h.name = :heroName", Hero.class).setParameter("heroName", heroName).getSingleResult();
+			try {
+				hero = entityManager.find(Hero.class, heroName);
+			} catch (Exception e) {
+				System.out.println("|" + selectedName + "|" + heroName + "|");
+			}
 			scrollPane = setUpHeroStats(24);
 		}
 		else {

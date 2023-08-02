@@ -1,8 +1,12 @@
 package swingy.character.items;
 
+import javax.persistence.Entity;
+
+@Entity
 public class Axe extends Weapon{
 	public Axe() {
-		this.type = "Axe";
+		super();
+		this.type = "Weapon";
 		this.name = "Axe";
 		this.rank = "basic";
 		this.levelRequired = 1;
@@ -11,7 +15,8 @@ public class Axe extends Weapon{
 	}
 
 	public Axe(String rarity) {
-		this.type = "Axe";
+		super();
+		this.type = "Weapon";
 		this.name = "Axe";
 		this.rank = rarity;
 		this.levelRequired = 1;

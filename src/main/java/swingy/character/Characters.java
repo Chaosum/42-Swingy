@@ -28,8 +28,8 @@ public abstract class Characters {
 	protected int armorValue;
 	protected String typeName;
 	@ElementCollection
-	@CollectionTable(name = "character_weaknesses", joinColumns = @JoinColumn(name = "character_name"))
-	@Column(name = "weakness")
+    @CollectionTable(name = "character_weaknesses", joinColumns = @JoinColumn(name = "character_name"))
+    @Column(name = "weakness")
 	protected List<String> weaknesses;
 	protected int	critChance;
 	protected int	critModifier;

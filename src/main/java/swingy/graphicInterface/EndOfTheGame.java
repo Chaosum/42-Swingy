@@ -12,6 +12,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import swingy.character.hero.Hero;
+import swingy.character.hero.HeroCreator;
 
 public class EndOfTheGame extends JDialog {
 	MainFrame parentParent;
@@ -47,8 +48,8 @@ public class EndOfTheGame extends JDialog {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				saveHero();
+				parentParent.enterTheDungeon(hero.getName());
 				dispose();
-				parentParent.enterTheDungeon(hero);
 			}
 		});
 		JButton mainMenuButton = new JButton("Main menu");
@@ -56,8 +57,8 @@ public class EndOfTheGame extends JDialog {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				saveHero();
-				dispose();
 				parentParent.mainMenu();
+				dispose();
 			}
 		});
 		winScreen.add(youWinLabel);
@@ -67,7 +68,7 @@ public class EndOfTheGame extends JDialog {
 	}
 
 	private	void	saveHero() {
-		//save hero here
+		HeroCreator.saveHeroToDatabase(hero, true);
 	}
 
 	private void 	loseCase() {
@@ -79,16 +80,17 @@ public class EndOfTheGame extends JDialog {
 		retryButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				parentParent.enterTheDungeon(hero.getName());
 				dispose();
-				parentParent.enterTheDungeon(hero);
 			}
 		});
 		JButton mainMenuButton = new JButton("Main menu");
 		mainMenuButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				dispose();
+				parentParent.getHeroSelection().upDateHeroList();
 				parentParent.mainMenu();
+				dispose();
 			}
 		});
 		winScreen.add(youLoseLabel);

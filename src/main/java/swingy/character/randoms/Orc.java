@@ -21,9 +21,9 @@ public class Orc extends Mob {
 		this.armorValue = 8 + (2 * level);
 		this.critChance = 10;
 		this.critModifier = 2;
-		this.lootTable.put(30, new Axe());
-		this.lootTable.put(15, new Axe("rare"));
-		this.lootTable.put(5, new BronzeHelmet());
+		this.lootTable.put(40, new Axe());
+		this.lootTable.put(35, new Axe("rare"));
+		this.lootTable.put(30, new BronzeHelmet());
 		this.lootTable.put(15, new BronzeHelmet("rare"));
 		this.lootTable.put(5, new BronzeHelmet("epic"));
 

@@ -15,5 +15,6 @@ public class Weapon extends Items {
 	public void special() {}
 	public void special(Hero hero) {}
 	public Weapon() {
+		super();
 	}
 }

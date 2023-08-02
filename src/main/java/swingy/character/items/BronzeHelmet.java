@@ -1,10 +1,14 @@
 package swingy.character.items;
 
+import javax.persistence.Entity;
+
+@Entity
 public class BronzeHelmet extends Helmet{
 	public BronzeHelmet() {
+		super();
 		this.name = "BronzeHelmet";
 		this.rank = "basic";
-		this.type = "BronzeHelmet";
+		this.type = "Helmet";
 		this.levelRequired = 1;
 		this.attackModifier = 0;
 		this.hpModifier = 50;
@@ -12,9 +16,10 @@ public class BronzeHelmet extends Helmet{
 	}
 
 	public BronzeHelmet(String rarity) {
+		super();
 		this.name = "BronzeHelmet";
 		this.rank = rarity;
-		this.type = "BronzeHelmet";
+		this.type = "Helmet";
 		this.levelRequired = 1;
 		this.attackModifier = 0;
 		if (rarity.contains("rare")) {

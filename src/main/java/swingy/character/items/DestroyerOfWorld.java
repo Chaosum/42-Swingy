@@ -3,37 +3,34 @@ package swingy.character.items;
 import javax.persistence.Entity;
 
 @Entity
-public class VampireTooths extends Weapon {
-	
-	public VampireTooths() {
+public class DestroyerOfWorld extends Weapon{
+	public DestroyerOfWorld() {
 		super();
 		this.type = "Weapon";
-		this.name = "VampireTooths";
+		this.name = "DestroyerOfWorld";
 		this.rank = "Basic";
 		this.levelRequired = 1;
-		this.speedValue = 2;
-		this.attackModifier = 10;
+		this.speedValue = 1;
+		this.attackModifier = 20;
 		this.specialEffects.add("Perforant");
-		this.specialEffects.add("Lifesteal");
 	}
 
-	public VampireTooths(String rarity) {
+	public DestroyerOfWorld(String rarity) {
 		super();
 		this.type = "Weapon";
-		this.name = "VampireTooths";
+		this.name = "DestroyerOfWorld";
 		this.rank = rarity;
 		this.levelRequired = 1;
-		this.speedValue = 2;
+		this.speedValue = 1;
 		if (rarity.contains("rare")) {
-			this.attackModifier = 15;
+			this.attackModifier = 30;
 		}
 		if (rarity.contains("epic")) {
-			this.attackModifier = 20;
+			this.attackModifier = 40;
 		}
 		else {
-			this.attackModifier = 10;
+			this.attackModifier = 20;
 		}
 		this.specialEffects.add("Perforant");
-		this.specialEffects.add("Lifesteal");
 	}
 }

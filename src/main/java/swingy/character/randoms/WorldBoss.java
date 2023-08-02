@@ -1,6 +1,6 @@
 package swingy.character.randoms;
 
-import swingy.character.items.DestroyerOfWold;
+import swingy.character.items.DestroyerOfWorld;
 
 public class WorldBoss extends Mob{
 	protected String category;
@@ -14,7 +14,7 @@ public class WorldBoss extends Mob{
 		this.attackValue = (5 * level);
 		this.category = "Boss";
 		this.experienceDroped = 3000 * level;
-		this.lootTable.put(15, new DestroyerOfWold());
-		this.weapon = new DestroyerOfWold();
+		this.lootTable.put(15, new DestroyerOfWorld());
+		this.weapon = new DestroyerOfWorld();
 	}
 }

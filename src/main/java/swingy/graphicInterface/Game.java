@@ -110,7 +110,7 @@ public class Game extends JPanel implements KeyListener{
 		JLabel name = new JLabel(hero.getName() + " " + hero.getTitle());
 		name.setFont(new Font("Arial", Font.BOLD, 20));
 		JLabel heroLvl = new JLabel( hero.getTypeName() + " lvl. " + hero.getLevel());
-		JLabel exeperience = new JLabel("xp : " + hero.getExperience() + " / " + hero.getNextLevelXp() + hero.getExperience() + " | needed: " + hero.getNextLevelXp());
+		JLabel exeperience = new JLabel("xp : " + hero.getExperience() + " / " + (hero.getNextLevelXp() + hero.getExperience()) + " | needed: " + hero.getNextLevelXp());
 		JLabel heroHp = new JLabel( "Hp : " + hero.getHp() + " / " + (hero.getMaxHp() + hero.getHpBonus()));
 		JLabel special = new JLabel("Spacial : " + hero.getSpecialDescription());
 		JLabel heroStats = new JLabel("Attack : " + hero.getAttackValue() + " " + hero.getTitle() + "Armor : " + hero.getArmorValue());
@@ -325,8 +325,10 @@ public class Game extends JPanel implements KeyListener{
 
 	private void lootMob() {
 		hero.gainExperience(ennemy.getExperienceDroped());
-		new LootBoxChoice((JFrame) SwingUtilities.getWindowAncestor(Game.this), this);
-		//afficher les items loot avec un random rand pour voir si on les loot puis pop-up avec choix d'equiper ou pas
+		LootBoxChoice lootbox = new LootBoxChoice((JFrame) SwingUtilities.getWindowAncestor(Game.this), this);
+		if (lootbox.worthPrint == true) {
+			lootbox.setVisible(true);
+		}
 	}
 
 	private void	combatEvent() {

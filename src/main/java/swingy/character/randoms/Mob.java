@@ -5,12 +5,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import swingy.character.Characters;
 import swingy.character.hero.DeathException;
 import swingy.character.hero.Hero;
 import swingy.character.items.Items;
 import swingy.character.items.Weapon;
 
+@Data
+@EqualsAndHashCode(callSuper=false)
 public class Mob extends Characters{
 	protected List<String> phrases;
 	protected Weapon weapon;

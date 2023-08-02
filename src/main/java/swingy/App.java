@@ -48,12 +48,6 @@ public class App {
 			statement.executeUpdate("CREATE TABLE Hero (name VARCHAR(20) PRIMARY KEY, title VARCHAR(50))");
 		}
 	}
-
-	//public static void startGame() throws Exception {
-		//	MainFrame window = new MainFrame();
-		//	window.setVisible(true);
-	//}
-
 	public static void main(String[] args) {
 		try {
 			createDatabase();
@@ -64,8 +58,9 @@ public class App {
 			MainFrame window = new MainFrame();
 			window.setVisible(true);
 		} catch (Exception e) {
-			MainFrame.closeEntityManagerFactory();
 			System.out.println(e.getMessage());
+			MainFrame.entityManager.close();
+			MainFrame.entityManagerFactory.close();
 		}
 	}
 }

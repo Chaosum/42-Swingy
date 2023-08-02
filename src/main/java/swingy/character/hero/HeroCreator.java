@@ -2,8 +2,8 @@ package swingy.character.hero;
 
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
+
+import swingy.graphicInterface.MainFrame;
 
 public class HeroCreator {
 
@@ -26,22 +26,22 @@ public class HeroCreator {
 			throw new WrongClassException( "Error : \"" +  className + "\" is not a correct or available class.");
 	}
 
-	public static void saveHeroToDatabase(Hero newHero) throws EntityExistsException {
-		EntityManagerFactory emf = Persistence.createEntityManagerFactory("swingypersistance");
-		EntityManager em = emf.createEntityManager();
-
+	public static void saveHeroToDatabase(Hero newHero, boolean upDate) throws EntityExistsException {
+		EntityManager entityManager = MainFrame.entityManager;
 		try {
-			em.getTransaction().begin();
-			em.persist(newHero); // Cette ligne enregistre le nouvel héro dans la base de données
-			em.getTransaction().commit();
+			entityManager.getTransaction().begin();
+			if (upDate == false) {
+				entityManager.persist(newHero); // Cette ligne enregistre le nouvel héro dans la base de données
+			}
+			else {
+				entityManager.merge(newHero);
+			}
+			entityManager.getTransaction().commit();
 		} catch (EntityExistsException e) {
 			throw e;
 		}
 		catch (Exception e){
-			//des trucs
-		} finally {
-			em.close();
-			emf.close();
+			System.out.println(e);
 		}
 	}
 }

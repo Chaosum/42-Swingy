@@ -13,11 +13,13 @@ public class ClassMage extends Hero{
 	}
 	public ClassMage(String name) {
 		super(name);
-		this.attackValue = 5;
+		this.maxHp = 300;
+		this.hp = 300 + this.hpBonus;
+		this.attackValue = 15;
 		this.typeName = "Mage";
 		this.specialAttack = "fireball";
 		this.specialType = "activ";
-		this.currentCharge = 0;
+		this.currentCharge = 3;
 		this.specialChargeCounter = 3;
 		this.weapon = new Wand();
 	}

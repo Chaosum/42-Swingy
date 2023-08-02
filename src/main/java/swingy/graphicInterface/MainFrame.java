@@ -19,7 +19,7 @@ import swingy.map.Map;
 @Data
 @EqualsAndHashCode(callSuper=false)
 public class MainFrame extends JFrame {
-	private static EntityManagerFactory entityManagerFactory;
+	public static EntityManagerFactory entityManagerFactory;
 	public static EntityManager entityManager;
 	private DisplayHeroStats displayHeroStats;
 	private HeroSelection heroSelection;
@@ -37,11 +37,6 @@ public class MainFrame extends JFrame {
 		windowsPane = (JPanel) this.getContentPane();
 		mainMenu();
 	}
-	public static void closeEntityManagerFactory() {
-		if (entityManagerFactory != null && entityManagerFactory.isOpen()) {
-			entityManagerFactory.close();
-        }
-    }
 	
 	public void mainMenu() {
 		windowsPane.removeAll();
@@ -59,7 +54,7 @@ public class MainFrame extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (heroSelection.getHeroList().getSelectedValue() != null) {
-					enterTheDungeon(displayHeroStats.getHero());
+					enterTheDungeon(displayHeroStats.getHero().getName());
 				}
 			}
 		});
@@ -69,7 +64,9 @@ public class MainFrame extends JFrame {
 		repaint();
 	}
 	
-	public void enterTheDungeon(Hero hero){
+	public void enterTheDungeon(String heroName){
+		EntityManager entityManager = entityManagerFactory.createEntityManager();
+		Hero hero = entityManager.find(Hero.class, heroName);
 		Map map = new Map(hero);
 		windowsPane.removeAll();
 		game = new Game(map, this);
