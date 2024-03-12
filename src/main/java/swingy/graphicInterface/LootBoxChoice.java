@@ -33,7 +33,7 @@ public class LootBoxChoice extends JDialog{
 		this.ennemy = parent.getEnnemy();
 		setLayout(new BorderLayout());
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-		setSize(600, 300);
+		setSize(800, 200);
 		setLocationRelativeTo(parentFrame);
 		setUndecorated(true);
 		setResizable(false);

@@ -12,15 +12,20 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.Random;
 
+import javax.swing.AbstractAction;
+import javax.swing.ActionMap;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.InputMap;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
@@ -31,7 +36,7 @@ import swingy.character.randoms.Mob;
 import swingy.character.randoms.MobSpawner;
 import swingy.map.Map;
 
-public class Game extends JPanel implements KeyListener{
+public class Game extends JPanel{
 	private Hero	hero;
 	private Map		map;
 	private JPanel	leftZone;
@@ -57,9 +62,8 @@ public class Game extends JPanel implements KeyListener{
 		this.flee = false;
 
 		setLayout(new BorderLayout());
-		requestFocusInWindow();
-		addKeyListener(this);
 		setFocusable(true);
+		requestFocusInWindow();
 		setFocusTraversalKeysEnabled(false);
 		playerZone();
 		mapZone();
@@ -497,56 +501,81 @@ public class Game extends JPanel implements KeyListener{
 		return (false);
 	}
 
-	
-	@Override
-	public void keyPressed(KeyEvent e) {
-		int keyCode = e.getKeyCode();
-		if (keyCode == KeyEvent.VK_UP) {
-			if(inCombat == false) {
-				map.moveUp();
-				upDateEventZone();
-				updateCenterZone();
-			}
-		} else if (keyCode == KeyEvent.VK_DOWN) {
-			if(inCombat == false) {
-				map.moveDown();
-				upDateEventZone();
-				updateCenterZone();
-			}
-		} else if (keyCode == KeyEvent.VK_LEFT) {
-			if(inCombat == false) {
-				map.moveLeft();
-				upDateEventZone();
-				updateCenterZone();
-			}
-		} else if (keyCode == KeyEvent.VK_RIGHT) {
-			if(inCombat == false) {
-				map.moveRight();
-				upDateEventZone();
-				updateCenterZone();
-			}
-		} else if (keyCode == KeyEvent.VK_SPACE) {
-			if(inCombat == true) {
-				try {
-					combatRound();
+	private void setupKeyBindings() {
+		InputMap inputMap = getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+		ActionMap actionMap = getRootPane().getActionMap();
+
+		// Déplacement vers le haut
+		inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0), "MoveUp");
+		actionMap.put("MoveUp", new AbstractAction() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (inCombat == false) {
+					map.moveUp();
 					upDateEventZone();
-					updatePlayerZone();
-					if(inCombat == false) {
-						updateCenterZone();
-					}
-				} catch (DeathException ex) {
-					new EndOfTheGame((JFrame) SwingUtilities.getWindowAncestor(Game.this), mainFrame, current, victory);
+					updateCenterZone();
 				}
 			}
-		}
-	}
-	
-	@Override
-	public void keyReleased(KeyEvent arg0) {
-	}
-	
-	@Override
-	public void keyTyped(KeyEvent arg0) {
+		});
+
+		// Déplacement vers le bas
+		inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0), "MoveDown");
+		actionMap.put("MoveDown", new AbstractAction() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if( inCombat == false) {
+					map.moveDown();
+					upDateEventZone();
+					updateCenterZone();
+				}
+			}
+		});
+
+		// Déplacement vers la gauche
+		inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0), "MoveLeft");
+		actionMap.put("MoveLeft", new AbstractAction() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if(inCombat == false) {
+					map.moveLeft();
+					upDateEventZone();
+					updateCenterZone();
+				}
+			}
+		});
+
+		// Déplacement vers la droite
+		inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0), "MoveRight");
+		actionMap.put("MoveRight", new AbstractAction() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if(inCombat == false) {
+					map.moveRight();
+					upDateEventZone();
+					updateCenterZone();
+				}
+			}
+		});
+
+		// Action spéciale (combat)
+		inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0), "SpecialAction");
+		actionMap.put("SpecialAction", new AbstractAction() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if(inCombat == true) {
+					try {
+						combatRound();
+						upDateEventZone();
+						updatePlayerZone();
+						if(inCombat == false) {
+							updateCenterZone();
+						}
+					} catch (DeathException ex) {
+						new EndOfTheGame((JFrame) SwingUtilities.getWindowAncestor(Game.this), mainFrame, current, victory);
+					}
+				}
+			}
+		});
 	}
 	
 	//getters et setters
@@ -555,5 +584,8 @@ public class Game extends JPanel implements KeyListener{
 	}
 	public Mob getEnnemy() {
 		return (this.ennemy);
+	}
+	public void initializeKeyBindings() {
+		setupKeyBindings();
 	}
 }

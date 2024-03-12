@@ -3,6 +3,8 @@ package swingy.graphicInterface;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -36,6 +38,17 @@ public class MainFrame extends JFrame {
 		this.setLayout(new BorderLayout());
 		windowsPane = (JPanel) this.getContentPane();
 		mainMenu();
+		this.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent event) {
+				if (entityManager != null && entityManager.isOpen()) {
+					entityManager.close();
+				}
+				if (entityManagerFactory != null && entityManagerFactory.isOpen()) {
+					entityManagerFactory.close();
+				}
+			}
+		});
 	}
 	
 	public void mainMenu() {
@@ -71,8 +84,9 @@ public class MainFrame extends JFrame {
 		windowsPane.removeAll();
 		game = new Game(map, this);
 		windowsPane.add(game, BorderLayout.CENTER);
+		game.initializeKeyBindings();
 		revalidate();
 		repaint();
 	}
-
+	
 }
