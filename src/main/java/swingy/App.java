@@ -6,7 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import swingy.graphicInterface.MainFrame;
+import swingy.view.GUI.MainFrame;
 
 /**
  * superuser psql swingy et swingyroot
@@ -21,13 +21,13 @@ public class App {
 		return (DriverManager.getConnection(url, username, password));
 	}
 
-	public static Statement modifyDatabase(Connection connection) throws SQLException{
+	public static Statement databaseConnector(Connection connection) throws SQLException{
 		return (connection.createStatement());
 	}
 	private static void createDatabase() throws SQLException {
 		String databaseName = "swingy";
 
-		Statement statement = modifyDatabase(connectToDatabase());
+		Statement statement = databaseConnector(connectToDatabase());
 		ResultSet resultSet = statement.executeQuery("SELECT 1 FROM pg_database WHERE datname = '" + databaseName + "'");
 		if (resultSet.next()) {
 			System.out.println("La base de données '" + databaseName + "' existe déjà.");
@@ -49,13 +49,19 @@ public class App {
 		}
 	}
 	public static void main(String[] args) {
+		System.out.println(args[0] );
+		if (args[0] == null && (args[0] != "console" || args[0] != "GUI")) {
+			System.out.println("Wrong args : Expect console | GUI");
+			return ;
+		}
 		try {
 			createDatabase();
 		} catch (SQLException e) {
 			System.out.println("Erreur lors de la création de la base de données : " + e.getMessage());
 		}
 		try {
-			MainFrame window = new MainFrame();
+			boolean console = args[0] == "console";
+			MainFrame window = new MainFrame(console);
 			window.setVisible(true);
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
